@@ -1,0 +1,73 @@
+.notification-dot {
+    width: 8px!important;
+    height: 8px!important;
+}
+.search-results-reservation{
+    position:absolute;
+    top:100%;
+    left:12px;
+    right:12px;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    max-height:260px;
+    overflow-y:auto;
+    z-index:9999;
+    margin-top:6px;
+}
+
+.search-results-reservation .search-item{
+    padding:12px 16px;
+    cursor:pointer;
+    border-bottom:1px solid #f1f1f1;
+    transition:.15s;
+}
+
+.search-results-reservation .search-item:last-child{
+    border-bottom:none;
+}
+
+.search-results-reservation .search-item:hover{
+    background:#f5faff;
+}
+
+.search-results-reservation .search-name{
+    font-weight:600;
+    display:block;
+    margin:0;
+}
+
+.search-results-reservation .search-mobile{
+    font-size:13px;
+    color:#777;
+}
+
+.teeth.selected {
+    fill: #2d9cff !important;
+}
+
+.teeth.worked {
+    fill: #ff3b30 !important;
+}
+.teeth.worked.selected{
+    fill:#2d9cff !important;
+}
+#dropzoneServerFiles{
+    min-height:100px;
+    position:relative;
+    margin-bottom:20px;
+}
+
+#dropzoneServerFiles .dz-message{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    margin:0;
+}
+
+
+#dropzoneServerFiles.dz-started .dz-message{
+    display: none;
+}

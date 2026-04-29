@@ -1,0 +1,47 @@
+.table-header-1 td[colspan] {
+    background-color: #e8f0fe;
+    font-weight: bold;
+}
+
+.table-header-1 td:first-child {
+    text-align: center;
+    width: 50px;
+}
+
+.table-header-1 td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.table-header-2 th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+    text-align: left;
+    border: 1px solid #ddd;
+    padding: 3px 10px;
+}
+
+.table-body td {
+    padding: 3px 10px;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 24px;
+    background: white;
+}
+
+.table tr:hover {
+    background-color: #f1faff;
+}
+.package-paid {
+    color: green!important;
+    font-weight: bold;
+}
+.package-not-paid {
+    color: red!important;
+    font-weight: bold;
+}

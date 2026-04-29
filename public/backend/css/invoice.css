@@ -1,0 +1,185 @@
+body{
+    font-family: DejaVu Sans, sans-serif;
+    background: #f5f6f8;
+    color:#222;
+    margin:0;
+    padding:24px;
+    font-size:14px;
+}
+
+.invoice{
+    max-width: 980px;
+    margin: 0 auto;
+    background:#fff;
+    border:1px solid #dcdfe4;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,.05);
+}
+
+.invoice-header{
+    padding:28px 32px 18px 32px;
+    border-bottom:1px solid #e9ecef;
+    background: linear-gradient(to right, #ffffff, #f8fafc);
+}
+
+.brand-title{
+    font-size:28px;
+    font-weight:700;
+    margin:0;
+    color:#111827;
+}
+
+.brand-subtitle{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:4px;
+}
+
+.invoice-meta{
+    text-align:right;
+}
+
+.invoice-badge{
+    display:inline-block;
+    background:#111827;
+    color:#fff;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+}
+
+.invoice-date{
+    margin-top:10px;
+    font-size:13px;
+    color:#6b7280;
+}
+
+.patient-boxes{
+    padding:24px 32px;
+}
+
+.info-card{
+    height:100%;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:16px 18px;
+    background:#fafafa;
+}
+
+.info-label{
+    font-size:12px;
+    color:#6b7280;
+    text-transform:uppercase;
+    margin-bottom:6px;
+}
+
+.info-value{
+    font-size:20px;
+    font-weight:700;
+    color:#111827;
+    margin:0;
+}
+
+.debt-ok{
+    color:#15803d;
+}
+
+.debt-bad{
+    color:#b91c1c;
+}
+
+.table-wrap{
+    padding:0 32px 24px 32px;
+}
+
+.invoice-table{
+    margin-bottom:0;
+    border:1px solid #e5e7eb;
+}
+
+.invoice-table thead th{
+    background:#f3f4f6;
+    border-bottom:1px solid #e5e7eb !important;
+    color:#374151;
+    font-size:13px;
+    font-weight:700;
+    padding:14px 12px;
+}
+
+.invoice-table tbody td{
+    padding:14px 12px;
+    vertical-align:middle;
+    border-color:#eceff3 !important;
+}
+
+.amount{
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.invoice-footer{
+    padding:18px 32px 28px 32px;
+    border-top:1px solid #e9ecef;
+    background:#fcfcfc;
+}
+
+.summary-box{
+    max-width:320px;
+    margin-left:auto;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    overflow:hidden;
+    background:#fff;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    padding:12px 16px;
+    border-bottom:1px solid #eef1f4;
+}
+
+.summary-row:last-child{
+    border-bottom:none;
+}
+
+.summary-row.total{
+    background:#f9fafb;
+    font-weight:700;
+    font-size:16px;
+}
+
+.print-btn{
+    position: fixed;
+    right: 24px;
+    top: 24px;
+    z-index: 50;
+}
+
+@media print{
+    body{
+        background:#fff;
+        padding:0;
+    }
+
+    .print-btn{
+        display:none !important;
+    }
+
+    .invoice{
+        max-width:100%;
+        border:none;
+        border-radius:0;
+        box-shadow:none;
+    }
+
+    @page{
+        size: A4;
+        margin: 10mm;
+    }
+}
