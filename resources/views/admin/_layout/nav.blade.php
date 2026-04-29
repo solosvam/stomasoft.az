@@ -19,6 +19,7 @@
             <a href="#" data-lang="az" class="dropdown-item {{ App::isLocale('az') ? 'active' : '' }}">AZ</a>
             <a href="#" data-lang="en" class="dropdown-item {{ App::isLocale('en') ? 'active' : '' }}">EN</a>
             <a href="#" data-lang="ru" class="dropdown-item {{ App::isLocale('ru') ? 'active' : '' }}">RU</a>
+            <a href="#" data-lang="tr" class="dropdown-item {{ App::isLocale('tr') ? 'active' : '' }}">TR</a>
         </div>
     </div>
     <!-- Language Switch End -->

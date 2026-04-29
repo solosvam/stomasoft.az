@@ -13,4 +13,8 @@
             'name'  => 'Russian',
             'locale'    => 'ru_RU'
         ],
+        'tr' => [
+            'name'  => 'Turkish',
+            'locale'    => 'tr_TR'
+        ],
     ];

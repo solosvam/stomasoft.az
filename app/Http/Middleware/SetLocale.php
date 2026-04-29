@@ -15,7 +15,7 @@ class SetLocale
      */
     public function handle($request, Closure $next)
     {
-        if ($request->has('lang') && in_array($request->lang, ['az', 'en', 'ru'])) {
+        if ($request->has('lang') && in_array($request->lang, ['az', 'en', 'ru','tr'])) {
             session(['locale' => $request->lang]);
         }
 
