@@ -6,7 +6,7 @@
     <title>StomaSoft - Stomatologiya İdarəetmə Sistemi</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('frontend/img/favicon.ico')}}">
     <style>
         body{font-family:Inter,Arial,sans-serif;background:#f7fbff;color:#102033}
         .hero{min-height:100vh;background:linear-gradient(135deg,#eef8ff,#ffffff)}
