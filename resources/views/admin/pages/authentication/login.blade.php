@@ -47,16 +47,35 @@
                 <h2 class="cta-1 text-primary">başlayaq!</h2>
             </div>
             <div>
+                @php
+                    $isDemo = str_starts_with(request()->getHost(),'demo.');
+                @endphp
                 <form id="loginForm" class="tooltip-end-bottom" action="{{ route('admin.loginpost') }}" method="POST">
                     @csrf
                     <div class="mb-3 filled form-group tooltip-end-top">
                         <i data-acorn-icon="user"></i>
-                        <input class="form-control" placeholder="Login" name="login" value="{{ request()->getHost() === 'demo.stomasoft.test' ? 'demo' : old('login') }}" />
+
+                        <input
+                            class="form-control"
+                            placeholder="Login"
+                            name="login"
+                            value="{{ $isDemo ? 'demo' : old('login') }}"
+                        />
+
                         {!! validationResult('login',$errors) !!}
                     </div>
+
                     <div class="mb-3 filled form-group tooltip-end-top">
                         <i data-acorn-icon="lock-off"></i>
-                        <input class="form-control pe-7" name="password" type="{{ request()->getHost() === 'demo.stomasoft.test' ? 'text' : 'password' }}" placeholder="Parol" value="{{ request()->getHost() === 'demo.stomasoft.test' ? 'demo12345' : '' }}" />
+
+                        <input
+                            class="form-control pe-7"
+                            name="password"
+                            type="{{ $isDemo ? 'text' : 'password' }}"
+                            placeholder="Parol"
+                            value="{{ $isDemo ? 'demo12345' : '' }}"
+                        />
+
                         {!! validationResult('password',$errors) !!}
                     </div>
                     <button type="submit" class="btn btn-lg btn-primary">Daxil ol</button>
