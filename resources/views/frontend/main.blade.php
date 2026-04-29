@@ -71,7 +71,7 @@
                 </div>
 
                 <p class="mt-4 text-muted">
-                    3 dil dəstəyi: Azərbaycan, Rus və İngilis dili.
+                    4 dil dəstəyi: Azərbaycan, Rus , Türk və İngilis dili.
                 </p>
             </div>
 
