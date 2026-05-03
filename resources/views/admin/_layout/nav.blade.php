@@ -211,6 +211,10 @@
                     <a href="{{route('admin.notes.list')}}" class="{{ isActiveRoute('admin/notes/*') }}">
                         <i data-acorn-icon="note" class="icon" data-acorn-size="18"></i>
                         <span class="label">{{__('menu_notes')}}</span>
+
+                        @if($notesCount > 0)
+                            <span class="badge bg-danger ms-2">{{ $notesCount }}</span>
+                        @endif
                     </a>
                 </li>
             @endcan

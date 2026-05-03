@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Messages;
+use App\Models\Notes;
 use App\Models\Services;
 use App\Models\Settings;
 use App\Models\User;
@@ -26,6 +27,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('*', function ($view) {
+            $notesCount = 0;
+
+            if (auth()->check()) {
+                $notesCount = Notes::where('user_id', auth()->id())
+                    ->count();
+            }
+
+            $view->with([
+                'notesCount' => $notesCount
+            ]);
+
             if (app()->environment('production')) {
                 URL::forceScheme('https');
             }
