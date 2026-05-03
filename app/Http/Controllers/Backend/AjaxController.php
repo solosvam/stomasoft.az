@@ -66,7 +66,7 @@ class AjaxController extends Controller
             $p = $list->first();
             return response()->json([
                 'success' => true,
-                'url' => '/admin/crm/' . $p->id
+                'url' => '/crm/' . $p->id
             ]);
         }
 
@@ -75,7 +75,7 @@ class AjaxController extends Controller
             'items' => $list->map(fn($p) => [
                 'full_name' => trim($p->name.' '.$p->surname),
                 'mobile' => $p->mobile,
-                'url' => '/admin/crm/' . $p->id
+                'url' => '/crm/' . $p->id
             ])->values()
         ]);
     }

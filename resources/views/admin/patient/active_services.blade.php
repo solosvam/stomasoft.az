@@ -48,6 +48,7 @@
                             <table class="table table-sm table-bordered table-striped">
                                 <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>{{ __('fullname') }}</th>
                                     <th>{{ __('gender') }}</th>
                                     <th>{{ __('age') }}</th>
