@@ -26,6 +26,48 @@
         $(document).ready(function() {
             initDatePicker();
         })
+        function updateExpenseFilteredTotal() {
+            let table = $('#expenseDatatable').DataTable();
+
+            let total = 0;
+
+            table.rows({ search: 'applied' }).every(function () {
+                let row = this.node();
+
+                let amountText = $(row).find('td:eq(3)').text();
+
+                let amount = amountText
+                    .replace('₼', '')
+                    .replace(/[^\d.,-]/g, '')
+                    .replace(',', '.')
+                    .trim();
+
+                total += parseFloat(amount) || 0;
+            });
+
+            $('#expenseFilteredTotal').text(total.toFixed(2));
+        }
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                let table = $('#expenseDatatable').DataTable();
+
+                updateExpenseFilteredTotal();
+
+                table.on('draw.dt search.dt page.dt', function () {
+                    updateExpenseFilteredTotal();
+                });
+
+                $('.datatable-search[data-datatable="#expenseDatatable"]').on('keyup change input', function () {
+                    setTimeout(updateExpenseFilteredTotal, 100);
+                });
+
+                $('.search-delete-icon').on('click', function () {
+                    setTimeout(updateExpenseFilteredTotal, 100);
+                });
+
+            }, 500);
+        });
     </script>
 @endsection
 @section('content')
@@ -266,7 +308,8 @@
                                     </tbody>
                                 </table>
                                 <div class="mt-3">
-                                    <strong>{{ __('total') }}:</strong> {{ number_format($expenseSummary->total_all, 2) }} ₼
+                                    <strong>{{ __('total') }}:</strong>
+                                    <span id="expenseFilteredTotal">{{ number_format($expenseSummary->total_all, 2) }}</span> ₼
                                 </div>
                             </div>
                         </div>
