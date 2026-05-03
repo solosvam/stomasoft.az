@@ -326,7 +326,7 @@
                 <form method="GET" action="{{route('admin.cashier.index')}}">
                     <label for="finance-date-filter">{{ __('start_end_dates') }}</label>
                     <input type="text" name="dates" class="form-control dateLimit" id="finance-date-filter" placeholder="{{ __('select') }}">
-                    <button type="submit" class="btn btn-primary mt-2">{{ __('add') }}</button>
+                    <button type="submit" class="btn btn-primary mt-2">{{__('filter')}}</button>
                 </form>
             </div>
         </div>
@@ -345,7 +345,7 @@
                             <input name="amount" type="number" step="0.01" max="10000" min="0.1" class="form-control" placeholder="{{ __('enter_amount') }}" value="{{old('amount')}}" required>
                             <label>{{ __('expense_description') }}</label>
                             <textarea name="description" class="form-control" rows="3" placeholder="{{ __('write_exoense_detail') }}" required>{{old('description')}}</textarea>
-                            <button type="submit" class="btn btn-primary mt-2">{{ __('filter') }}</button>
+                            <button type="submit" class="btn btn-primary mt-2">{{__('add')}}</button>
                         </form>
                     </div>
                 </div>
