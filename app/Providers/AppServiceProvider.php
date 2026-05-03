@@ -2,14 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\Messages;
 use App\Models\Notes;
-use App\Models\Services;
-use App\Models\Settings;
-use App\Models\User;
+use App\Models\PageVideo;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,8 +32,19 @@ class AppServiceProvider extends ServiceProvider
                     ->count();
             }
 
+            $pageVideo = null;
+            $currentRoute = Route::currentRouteName();
+
+
+            if ($currentRoute) {
+                $pageVideo = PageVideo::where('route', $currentRoute)
+                    ->where('active', 1)
+                    ->first();
+            }
+
             $view->with([
-                'notesCount' => $notesCount
+                'notesCount' => $notesCount,
+                'pageVideo'  => $pageVideo,
             ]);
 
             if (app()->environment('production')) {

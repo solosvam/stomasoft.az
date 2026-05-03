@@ -308,8 +308,43 @@
 </div>
 <!-- Theme Settings Modal End -->
 
+@if(!empty($pageVideo))
+    <div class="modal fade" id="pageVideoModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content rounded-4">
+                <div class="modal-header p-3 bg-danger">
+                    <h5 class="modal-title text-white">{{ $pageVideo->title ?? 'Video izah' }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="ratio ratio-16x9">
+                        <iframe
+                            src="https://www.youtube.com/embed/{{ $pageVideo->youtube_id }}"
+                            title="{{ $pageVideo->title }}"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
 <!-- Theme Settings & Niches Buttons Start -->
+
+
 <div class="settings-buttons-container">
+    @if(!empty($pageVideo))
+        <button type="button"
+                class="btn settings-button btn-danger p-0 mb-2"
+                data-bs-toggle="modal"
+                data-bs-target="#pageVideoModal">
+            <span title="{{ $pageVideo->title }}">
+                <i data-acorn-icon="play" class="position-relative"></i>
+            </span>
+        </button>
+    @endif
     <button type="button" class="btn settings-button btn-primary p-0" data-bs-toggle="modal" data-bs-target="#settings" id="settingsButton">
     <span class="d-inline-block no-delay" data-bs-delay="0" data-bs-offset="0,3" data-bs-toggle="tooltip" data-bs-placement="left" title="Settings">
       <i data-acorn-icon="paint-roller" class="position-relative"></i>
