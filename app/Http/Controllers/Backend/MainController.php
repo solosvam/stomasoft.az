@@ -68,10 +68,13 @@ class MainController extends Controller
 
             if (isset($reservations[$time])) {
                 $reservation = $reservations[$time];
-                $slot['type'] = 'busy';
-                $slot['url'] = $reservation->patient_id
-                    ? route('admin.crm.info', ['id' => $reservation->patient_id])
-                    : null;
+                if ($reservation->patient_id) {
+                    $slot['type'] = 'busy_patient';
+                    $slot['url'] = route('admin.crm.info', ['id' => $reservation->patient_id]);
+                } else {
+                    $slot['type'] = 'busy_empty';
+                    $slot['url'] = null;
+                }
             }
 
             $slots[] = $slot;

@@ -41,15 +41,23 @@
                     <div class="card-body">
                         <div class="d-flex flex-wrap gap-2">
                             @foreach($todaySlots as $slot)
-                                @if($slot['type'] == 'busy')
+
+                                @if($slot['type'] == 'busy_patient')
                                     <button type="button" class="btn btn-danger"
                                             @if($slot['url']) onclick="window.open('{{ $slot['url'] }}','_blank')" @endif>
                                         {{ $slot['time'] }}
                                     </button>
+
+                                @elseif($slot['type'] == 'busy_empty')
+                                    <button type="button" class="btn btn-outline-danger">
+                                        {{ $slot['time'] }}
+                                    </button>
+
                                 @elseif($slot['type'] == 'past')
                                     <button type="button" class="btn btn-muted">
                                         {{ $slot['time'] }}
                                     </button>
+
                                 @else
                                     <button type="button"
                                             class="btn btn-success open-reservation-modal"
@@ -57,7 +65,9 @@
                                             data-time="{{ $slot['time'] }}">
                                         {{ $slot['time'] }}
                                     </button>
+
                                 @endif
+
                             @endforeach
                         </div>
                     </div>
@@ -70,9 +80,14 @@
                     <div class="card-body">
                         <div class="d-flex flex-wrap gap-2">
                             @foreach($tomorrowSlots as $slot)
-                                @if($slot['type'] == 'busy')
+                                @if($slot['type'] == 'busy_patient')
                                     <button type="button" class="btn btn-danger"
                                             @if($slot['url']) onclick="window.open('{{ $slot['url'] }}','_blank')" @endif>
+                                        {{ $slot['time'] }}
+                                    </button>
+
+                                @elseif($slot['type'] == 'busy_empty')
+                                    <button type="button" class="btn btn-outline-danger">
                                         {{ $slot['time'] }}
                                     </button>
                                 @else
