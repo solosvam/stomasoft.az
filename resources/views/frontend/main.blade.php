@@ -40,7 +40,9 @@
     </style>
 </head>
 <body>
-
+@php
+    $isAz = app()->getLocale() == 'az';
+@endphp
 <nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
     <div class="container">
         <a class="navbar-brand brand" href="#">StomaSoft</a>
@@ -220,7 +222,7 @@
                         <p class="text-muted">{{ __('landing.package_desc') }}</p>
 
                         <div class="display-4 fw-bold text-primary my-4">
-                            99 AZN
+                            {{ $isAz ? '99 AZN' : '59 USD' }}
                             <span class="fs-5 text-muted">/ {{ __('landing.month') }}</span>
                         </div>
 
