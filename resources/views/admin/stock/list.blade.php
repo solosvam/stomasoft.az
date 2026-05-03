@@ -8,11 +8,91 @@
     <link rel="stylesheet" href="{{asset('backend/css/vendor/select2.min.css')}}"/>
     <link rel="stylesheet" href="{{asset('backend/css/vendor/select2-bootstrap4.min.css')}}"/>
     <link rel="stylesheet" href="{{asset('backend/css/vendor/datatables.min.css')}}"/>
+    <style>
+        .qty-box{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            width:130px;
+        }
+
+        .qty-btn{
+            width:34px;
+            height:34px;
+            border:1px solid #20a8e8;
+            background:#fff;
+            color:#20a8e8;
+            border-radius:10px;
+            font-size:20px;
+            line-height:1;
+        }
+
+        .qty-input{
+            width:55px;
+            height:34px;
+            border:1px solid #ddd;
+            border-radius:10px;
+            text-align:center;
+        }
+    </style>
 @endsection
 @section('js_page')
     <script src="{{asset('backend/js/vendor/datatables.min.js')}}"></script>
     <script src="{{asset('backend/js/cs/datatable.extend.js')}}"></script>
     <script src="{{asset('backend/js/plugins/datatable.boxedvariations.js')}}"></script>
+    <script>
+        $(document).on('click', '.qty-plus, .qty-minus', function () {
+            let box = $(this).closest('.qty-box');
+            let input = box.find('.qty-input');
+            let id = box.data('id');
+            let qty = parseInt(input.val()) || 0;
+
+            if ($(this).hasClass('qty-plus')) {
+                qty++;
+            } else {
+                qty = Math.max(0, qty - 1);
+            }
+
+            input.val(qty);
+            updateStockQty(id, qty, input);
+        });
+
+        $(document).on('change', '.qty-input', function () {
+            let box = $(this).closest('.qty-box');
+            let id = box.data('id');
+            let qty = parseInt($(this).val()) || 0;
+
+            if (qty < 0) qty = 0;
+
+            $(this).val(qty);
+            updateStockQty(id, qty, $(this));
+        });
+
+        function updateStockQty(id, qty, input) {
+            let price = parseFloat(input.data('price'));
+
+            let total = (price * qty).toFixed(2);
+            $('#total-' + id).text(total + ' AZN');
+
+            $.ajax({
+                url: "{{ route('admin.stock.updateQty') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: id,
+                    qty: qty
+                },
+                success: function (res) {
+                    if (res.success) {
+                        $('#total-' + id).text(res.total + ' AZN');
+                    }
+                },
+                error: function () {
+                    alert('Xəta oldu brat');
+                }
+            });
+        }
+    </script>
 @endsection
 
 @section('content')
@@ -106,9 +186,23 @@
                                         <td>{{$loop->iteration}}</td>
                                         <td>{{$stock->partner->name}}</td>
                                         <td class="text-alternate">{{$stock->product}}</td>
-                                        <td class="text-alternate">{{$stock->qty}} {{ __('piece') }}</td>
+                                        <td class="text-alternate">
+                                            <div class="qty-box" data-id="{{ $stock->id }}">
+                                                <button type="button" class="qty-btn qty-minus">−</button>
+
+                                                <input type="number"
+                                                       class="qty-input"
+                                                       value="{{ $stock->qty }}"
+                                                       min="0"
+                                                       data-price="{{ $stock->price }}">
+
+                                                <button type="button" class="qty-btn qty-plus">+</button>
+                                            </div>
+                                        </td>
                                         <td class="text-alternate">{{$stock->price}} AZN</td>
-                                        <td class="text-alternate">{{$stock->price * $stock->qty}} AZN</td>
+                                        <td class="text-alternate total-price" id="total-{{ $stock->id }}">
+                                            {{ $stock->price * $stock->qty }} AZN
+                                        </td>
                                         <td class="text-alternate">
                                             <a href="{{route('admin.stock.edit',$stock->id)}}" class="btn btn-primary btn-sm">{{ __('edit') }}</a>
                                             <a href="{{route('admin.stock.delete',$stock->id)}}" class="btn btn-danger btn-sm">{{ __('delete') }}</a>

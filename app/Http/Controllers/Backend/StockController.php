@@ -109,4 +109,25 @@ class StockController extends Controller
 
         return redirect()->back()->with('success', 'Stock silindi');
     }
+
+    public function updateQty(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:stock,id',
+            'qty' => 'required|integer|min:0',
+        ]);
+
+        $stock = Stock::where('id', $request->id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $stock->qty = $request->qty;
+        $stock->save();
+
+        return response()->json([
+            'success' => true,
+            'qty' => $stock->qty,
+            'total' => number_format($stock->price * $stock->qty, 2, '.', ''),
+        ]);
+    }
 }

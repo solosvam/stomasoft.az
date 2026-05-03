@@ -83,6 +83,7 @@ Route::name('admin.')->group(function() {
             Route::get('delete/{id}','delete')->name('delete');
             Route::post('add','add')->name('add');
             Route::post('update/{id}','update')->name('update');
+            Route::post('update-qty','updateQty')->name('updateQty');
         });
 
         Route::controller(StatisticsController::class)->middleware(['can:statistics'])->prefix('statistics')->name('statistics.')->group(function () {
