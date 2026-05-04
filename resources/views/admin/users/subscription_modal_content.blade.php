@@ -13,6 +13,14 @@
                 <input type="number" step="0.01" name="amount" class="form-control" value="100">
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">{{__('payment_type')}}</label>
+                <select class="form-select" name="method" required>
+                    <option value="cash">{{__('cash')}}</option>
+                    <option value="c2c">{{__('c2c')}}</option>
+                </select>
+            </div>
+
             <button class="btn btn-success">Ödəniş əlavə et</button>
         </form>
     </div>

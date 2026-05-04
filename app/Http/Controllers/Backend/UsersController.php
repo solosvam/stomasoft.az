@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Models\CashierLedger;
+use App\Models\DoctorCashBalance;
+use Illuminate\Support\Facades\DB;
 
 class UsersController extends Controller
 {
@@ -96,28 +99,56 @@ class UsersController extends Controller
         ]);
     }
 
-    public function subscriptionPayment(Request $request,$id)
+    public function subscriptionPayment(Request $request, $id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
+
         $validated = $request->validate([
             'subscription_ends_at' => 'required|date',
             'amount' => 'required|numeric|min:0',
+            'method' => 'required|in:cash,c2c',
         ]);
 
-        $oldEnd = $user->subscription_ends_at ?? now()->toDateString();
+        DB::transaction(function () use ($user, $validated) {
+            $oldEnd = $user->subscription_ends_at ?? now()->toDateString();
 
-        $user->update([
-            'subscription_ends_at' => $validated['subscription_ends_at'],
-        ]);
+            $user->update([
+                'subscription_ends_at' => $validated['subscription_ends_at'],
+            ]);
 
-        SubscriptionPayment::create([
-            'user_id' => $user->id,
-            'amount' => $validated['amount'],
-            'period_from' => $oldEnd,
-            'period_to' => $validated['subscription_ends_at'],
-            'paid_at' => now(),
-            'status' => 1,
-        ]);
+            SubscriptionPayment::create([
+                'user_id' => $user->id,
+                'amount' => $validated['amount'],
+                'period_from' => $oldEnd,
+                'period_to' => $validated['subscription_ends_at'],
+                'paid_at' => now(),
+                'status' => 1,
+            ]);
+
+            $cashBalance = DoctorCashBalance::where('doctor_id', auth()->id())
+                ->lockForUpdate()
+                ->first();
+
+            if (!$cashBalance) {
+                $cashBalance = DoctorCashBalance::create([
+                    'doctor_id' => auth()->id(),
+                    'balance' => 0,
+                ]);
+            }
+
+            $cashBalance->increment('balance', (float) $validated['amount']);
+
+
+            CashierLedger::create([
+                'cashier_id' => auth()->id(),
+                'doctor_id' => auth()->id(),
+                'type' => 'adjust_in',
+                'method' => $validated['method'],
+                'amount' => $validated['amount'],
+                'note' => $user->name . ' üçün abunə ödənişi',
+                'created_at' => now(),
+            ]);
+        });
 
         return redirect(route('admin.list'))->with('success', 'Ödəniş əlavə edildi!');
     }
