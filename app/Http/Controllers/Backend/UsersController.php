@@ -17,7 +17,11 @@ class UsersController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::withCount([
+            'patients',
+            'services',
+            'partners',
+        ])->get();
         $roles = Role::all();
         return view('admin.users.list',[
             'users'    => $users,

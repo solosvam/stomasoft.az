@@ -97,6 +97,9 @@
                                     <th>{{ __('mobile') }}</th>
                                     <th>{{ __('active') }}</th>
                                     <th>Abunəlik bitir</th>
+                                    <th>Pasient</th>
+                                    <th>Partnyor</th>
+                                    <th>Xidmət</th>
                                     <th>{{ __('operation') }}</th>
                                 </tr>
                                 </thead>
@@ -110,6 +113,9 @@
                                         <td class="text-alternate">{{$admin->mobile}}</td>
                                         <td class="text-alternate">{{ $admin->is_active ? __('active_status') : __('inactive_status') }}</td>
                                         <td class="text-alternate">{{$admin->subscription_ends_at}}</td>
+                                        <td class="text-alternate">{{$admin->patients_count}}</td>
+                                        <td class="text-alternate">{{$admin->patients_count}}</td>
+                                        <td class="text-alternate">{{$admin->patients_count}}</td>
                                         <td class="text-alternate">
                                             <a href="{{route('admin.edit',$admin->id)}}" class="btn btn-primary btn-sm">{{ __('edit') }}</a>
                                             <button class="btn btn-sm btn-warning subscriptionBtn"
