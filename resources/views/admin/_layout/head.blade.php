@@ -22,3 +22,11 @@
 <link rel="stylesheet" href="{{asset('backend/css/vendor/bootstrap-datepicker3.standalone.min.css')}}"/>
 <!-- Template Base Styles End -->
 <script src="{{ asset('backend/js/base/loader.js') }}"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0NQDFDGYRT"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-0NQDFDGYRT');
+</script>
