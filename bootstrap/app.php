@@ -26,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         Authenticate::redirectUsing(function ($request) {
-            return '/main';
+            return '/login';
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
