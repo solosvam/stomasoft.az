@@ -4,40 +4,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ __('landing.title') }}</title>
-
+    <link rel="canonical" href="https://stomasoft.az">
+    <meta name="robots" content="index, follow">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/img/favicon.ico') }}">
+    <meta name="description" content="StomaSoft stomatoloji klinikalar üçün CRM və idarəetmə sistemidir. Pasient bazası, rezervasiya, kassa, maliyyə və hesabat modulları bir paneldə.">
 
-    <style>
-        body{font-family:Inter,Arial,sans-serif;background:#f7fbff;color:#102033}
-        .hero{min-height:100vh;background:linear-gradient(135deg,#eef8ff,#ffffff)}
-        .brand{font-size:28px;font-weight:800;color:#0d6efd}
-        .hero-title{font-size:56px;font-weight:900;line-height:1.05}
-        .hero-text{font-size:20px;color:#5b6b7d}
-        .btn-main{padding:14px 28px;border-radius:14px;font-weight:700}
-        .card-soft{border:0;border-radius:24px;box-shadow:0 15px 45px rgba(13,110,253,.10)}
-        .feature-icon{width:58px;height:58px;border-radius:18px;background:#e7f1ff;color:#0d6efd;display:flex;align-items:center;justify-content:center;font-size:26px}
-        .section-title{font-weight:900}
-        .price-card{border:2px solid #0d6efd}
-        .footer{background:#102033;color:#c8d3df}
+    <meta name="keywords" content="stomatoloji proqram, dental crm, klinika idarəetmə sistemi, stomatologiya proqramı, pasient bazası, rezervasiya sistemi, stomatoloji crm azərbaycan">
 
-        @media(max-width:991px){
-            .navbar .container{gap:10px}
-            .brand{font-size:24px}
-            .hero{min-height:auto;padding-top:120px!important}
-            .hero-title{font-size:38px}
-            .hero-text{font-size:18px}
-            .btn-main{width:100%;text-align:center}
-            .mobile-actions{margin-left:auto}
-        }
+    <meta name="author" content="StomaSoft">
 
-        @media(max-width:575px){
-            .brand{font-size:22px}
-            .hero-title{font-size:34px}
-            .phone-link{width:100%;margin-bottom:5px}
-            .top-buttons a{width:100%}
-        }
-    </style>
+    <meta property="og:title" content="StomaSoft - Stomatoloji klinika idarəetmə sistemi">
+    <meta property="og:description" content="Pasient bazası, rezervasiya, kassa və hesabat modulları bir paneldə.">
+    <meta property="og:image" content="{{ asset('frontend/img/og-image.jpg') }}">
+    <meta property="og:url" content="https://stomasoft.az">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="StomaSoft">
+    <meta name="twitter:description" content="Stomatoloji klinikalar üçün CRM sistemi">
+    <meta name="twitter:image" content="{{ asset('frontend/img/og-image.jpg') }}">
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0NQDFDGYRT"></script>
     <script>
