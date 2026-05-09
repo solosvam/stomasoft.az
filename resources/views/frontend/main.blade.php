@@ -1,18 +1,16 @@
 <!doctype html>
+<!doctype html>
 <html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ __('landing.title') }}</title>
+
     <link rel="canonical" href="https://stomasoft.az">
     <meta name="robots" content="index, follow">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/img/favicon.ico') }}">
+
     <meta name="description" content="StomaSoft stomatoloji klinikalar üçün CRM və idarəetmə sistemidir. Pasient bazası, rezervasiya, kassa, maliyyə və hesabat modulları bir paneldə.">
-
     <meta name="keywords" content="stomatoloji proqram, dental crm, klinika idarəetmə sistemi, stomatologiya proqramı, pasient bazası, rezervasiya sistemi, stomatoloji crm azərbaycan">
-
     <meta name="author" content="StomaSoft">
 
     <meta property="og:title" content="StomaSoft - Stomatoloji klinika idarəetmə sistemi">
@@ -26,15 +24,22 @@
     <meta name="twitter:description" content="Stomatoloji klinikalar üçün CRM sistemi">
     <meta name="twitter:image" content="{{ asset('frontend/img/og-image.jpg') }}">
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0NQDFDGYRT"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
-        gtag('config', 'G-0NQDFDGYRT');
-    </script>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/img/favicon.ico') }}">
+
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </noscript>
+
+    <link rel="preload" href="{{ asset('frontend/css/style.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
+    </noscript>
 </head>
 <body>
 @php
@@ -277,7 +282,25 @@
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            let s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-0NQDFDGYRT';
+            document.head.appendChild(s);
+
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){ dataLayer.push(arguments); }
+            window.gtag = gtag;
+
+            gtag('js', new Date());
+            gtag('config', 'G-0NQDFDGYRT');
+        }, 2500);
+    });
+</script>
 
 </body>
 </html>
