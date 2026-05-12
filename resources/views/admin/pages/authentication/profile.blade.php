@@ -45,7 +45,10 @@
                 <section class="scroll-section" id="userButtons">
                     <div class="card h-100-card">
                         <div class="card-body">
-                            <form action="{{route('admin.profile.update')}}" method="POST" enctype="multipart/form-data">
+                            @php
+                                $isDemo = str_starts_with(request()->getHost(),'demo.');
+                            @endphp
+                            <form action="{{ $isDemo ? '#' : route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
 
                                 <div class="mb-3 row">
@@ -84,6 +87,7 @@
                 <section class="scroll-section" id="userButtons">
                     <div class="card h-100-card">
                         <div class="card-body">
+                            <form action="{{ $isDemo ? '#' : route('admin.profile.updatepassword') }}" method="POST">
                             <form action="{{route('admin.profile.updatepassword')}}" method="post">
                                 @csrf
 
