@@ -16,7 +16,7 @@
         <div id="root">
             @if(session('impersonate_original_id'))
                 <div style="background:#e24b4a; color:#fff; padding:10px 20px; text-align:center; font-size:13px;z-index: 999999;position: fixed;bottom:0;">
-                    ⚠️ Siz {{ auth()->user()->fullname }} kimi girişsiniz.
+                    ⚠️ Siz {{ auth()->user()->fullname }} kimi daxil oldunuz.
                     <a href="{{ route('admin.impersonate.stop') }}" style="color:#fff; font-weight:700; margin-left:12px;">
                         Öz profilinə qayıt →
                     </a>
