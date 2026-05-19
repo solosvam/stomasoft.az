@@ -14,6 +14,14 @@
     </head>
     <body>
         <div id="root">
+            @if(session('impersonate_original_id'))
+                <div style="background:#e24b4a; color:#fff; padding:10px 20px; text-align:center; font-size:13px;z-index: 999999;position: fixed;bottom:0;">
+                    ⚠️ Siz {{ auth()->user()->fullname }} kimi girişsiniz.
+                    <a href="{{ route('admin.impersonate.stop') }}" style="color:#fff; font-weight:700; margin-left:12px;">
+                        Öz profilinə qayıt →
+                    </a>
+                </div>
+            @endif
             @if(!empty($subscriptionWarning))
                 <div style="background:#dc3545;color:white;text-align:center;padding:10px;font-weight:600;top:0;width: 100%;z-index: 999999;position: absolute">
                     Abunəliyiniz {{ $subscriptionEndDate->format('d.m.Y') }} tarixində bitir.

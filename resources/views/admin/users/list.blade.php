@@ -124,6 +124,10 @@
                                                     data-bs-target="#subscriptionModal">
                                                 Abunəlik
                                             </button>
+                                            <a href="{{ route('admin.impersonate', $admin->id) }}"
+                                               class="btn btn-sm btn-outline-danger">
+                                                👁 Giriş et
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

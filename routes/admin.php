@@ -34,6 +34,9 @@ Route::name('admin.')->group(function() {
         Route::get('/settings', [MainController::class, 'settings'])->name('settings');
         Route::post('/settings_update', [MainController::class, 'settingsUpdate'])->name('settingsUpdate');
 
+        Route::get('/impersonate/stop', [UsersController::class, 'stopImpersonate']) ->name('impersonate.stop');
+        Route::get('/impersonate/{id}', [UsersController::class, 'impersonate'])->name('impersonate');
+
         Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
             Route::get('/','index')->name('index');
             Route::post('update','update')->name('update');

@@ -159,4 +159,27 @@ class UsersController extends Controller
 
         return redirect(route('admin.list'))->with('success', 'Ödəniş əlavə edildi!');
     }
+
+    public function impersonate($id)
+    {
+
+        session()->put('impersonate_original_id', auth()->id());
+
+        auth()->loginUsingId($id);
+
+        return redirect('/main');
+    }
+
+    public function stopImpersonate()
+    {
+        $originalId = session()->pull('impersonate_original_id');
+
+        if (!$originalId) {
+            abort(403);
+        }
+
+        auth()->loginUsingId($originalId);
+
+        return redirect('/list');
+    }
 }
