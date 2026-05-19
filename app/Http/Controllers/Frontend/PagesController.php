@@ -28,6 +28,7 @@ class PagesController extends Controller
     {
         $doctors = User::whereNotNull('clinic_name')
             ->where('clinic_name', '!=', '')
+            ->where('name','!=','demo')
             ->with([
                 'services' => fn($q) => $q->withoutGlobalScope('doctor')->where('active', 1)
             ])
