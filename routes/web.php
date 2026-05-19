@@ -25,5 +25,9 @@ Route::get('/admin', function () {
 Route::controller(PagesController::class)->name('page.')->group(function () {
     Route::get('/','home')->name('homee');
     Route::get('/home','home')->name('home');
+    Route::get('/doctors','doctors')->name('doctors');
+    Route::get('/patients','patients')->name('patients');
+    Route::post('/reservation-hours','reservationHours')->name('reservation.hours');
+    Route::post('/reservation-store','reservation')->name('reservation.store');
 });
 
