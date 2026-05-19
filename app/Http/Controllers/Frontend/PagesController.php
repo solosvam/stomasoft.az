@@ -28,7 +28,9 @@ class PagesController extends Controller
     {
         $doctors = User::whereNotNull('clinic_name')
             ->where('clinic_name', '!=', '')
-            ->with('services')
+            ->with([
+                'services' => fn($q) => $q->withoutGlobalScope('doctor')->where('active', 1)
+            ])
             ->orderBy('clinic_name')
             ->get();
 
@@ -109,8 +111,6 @@ class PagesController extends Controller
 
             'hour.required'      => 'Saat seç',
         ]);
-
-        $doctor = User::find($validated['doctor_id']);
 
         $date = $validated['date'];
         $hour = $validated['hour'];
