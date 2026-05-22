@@ -72,7 +72,7 @@
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('service') }}</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
                                         <select class="form-select" name="service_id" required>
-                                            <option value="1">{{ __('select_service') }}</option>
+                                            <option value="">{{ __('select_service') }}</option>
                                             @foreach($services as $service)
                                                 <option value="{{$service->id}}" @if($reservation->service_id == $service->id) selected @endif>{{$service->name}}</option>
                                             @endforeach
