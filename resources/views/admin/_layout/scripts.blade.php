@@ -40,6 +40,7 @@
             setRolePermission: "{{ route('admin.ajax.set-role-permission') }}",
             searchCustomer: "{{route('admin.ajax.search-customer')}}",
             searchCustomerForReservation: "{{route('admin.ajax.search-customer-reservation')}}",
+            massDeleteReservations: "{{ route("admin.reservations.massdelete") }}",
         }
     }
 

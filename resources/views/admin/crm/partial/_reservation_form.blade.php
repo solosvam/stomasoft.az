@@ -4,7 +4,7 @@
         <div class="col-md-6">
             <label>{{ __('service') }}</label>
             <select class="form-select select2" name="service_id" required>
-                <option value="1">{{ __('select_service') }}</option>
+                <option value="">{{ __('select_service') }}</option>
                 @foreach($services as $service)
                     <option value="{{$service->id}}">{{$service->name}}</option>
                 @endforeach

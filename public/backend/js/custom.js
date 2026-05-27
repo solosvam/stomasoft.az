@@ -606,3 +606,38 @@ $('.subscriptionBtn').on('click', function () {
         $('#subscriptionContent').html(res.html);
     });
 });
+
+$(document).on('change', '.check-all-reservations', function () {
+    $('.reservation-selector').prop('checked', $(this).is(':checked'));
+    toggleDeleteButton();
+});
+
+$(document).on('change', '.reservation-selector', toggleDeleteButton);
+
+function toggleDeleteButton() {
+    $('.delete-selected-reservations').toggleClass('d-none', $('.reservation-selector:checked').length === 0);
+}
+
+$(document).on('click', '.delete-selected-reservations', function () {
+    const ids = $('.reservation-selector:checked').map(function () {
+        return $(this).val();
+    }).get();
+
+    if (ids.length === 0) return;
+
+    if (!confirm(ids.length + ' rezervasiya silinəcək. Əminsiniz?')) return;
+
+    $.ajax({
+        url: urls.ajaxurls.massDeleteReservations,
+        type: 'POST',
+        data: {
+            ids: ids
+        },
+        success: function (response) {
+            location.reload();
+        },
+        error: function () {
+            alert('Xəta baş verdi');
+        }
+    });
+});

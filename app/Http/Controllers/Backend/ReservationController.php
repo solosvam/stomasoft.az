@@ -334,4 +334,18 @@ class ReservationController extends Controller
 
         return $html;
     }
+
+    public function massDelete(Request $request)
+    {
+        $request->validate([
+            'ids'   => 'required|array',
+            'ids.*' => 'integer|exists:reservations,id',
+        ]);
+
+        Reservation::whereIn('id', $request->ids)
+            ->where('doctor_id', auth()->id())
+            ->delete();
+
+        return response()->json(['success' => true]);
+    }
 }

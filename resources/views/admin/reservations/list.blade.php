@@ -32,10 +32,12 @@
                 <section class="scroll-section" id="hover">
                     <div class="card mb-5">
                         <div class="card-body">
+                            <button class="btn btn-outline-danger float-end mb-5 d-none delete-selected-reservations">Seçilenleri sil</button>
                             <!-- Hover Table Start -->
                             <table class="table table-sm table-bordered table-striped">
                                 <thead>
                                 <tr>
+                                    <th><input type="checkbox" class="check-all-reservations"> </th>
                                     <th>{{ __('patient') }}</th>
                                     <th>{{ __('date') }}</th>
                                     <th>{{ __('hour') }}</th>
@@ -47,6 +49,7 @@
                                 <tbody>
                                 @foreach($reservations as $reservation)
                                     <tr>
+                                        <td><input type="checkbox" class="reservation-selector" value="{{$reservation->id}}"></td>
                                         <td>{{$loop->iteration}}</td>
                                         <td>
                                             <a href="{{ $reservation->patient ? route('admin.crm.info', $reservation->patient->id) : '#' }}">

@@ -232,7 +232,7 @@
                                         <div class="row align-items-end g-2">
                                             <div class="col-md-3">
                                                 <select class="form-select select2 price-selector" name="service_id[]" required>
-                                                    <option value="1">{{ __('select_service') }}</option>
+                                                    <option value="">{{ __('select_service') }}</option>
                                                     @foreach($services as $service)
                                                         <option value="{{$service->id}}" data-price="{{$service->price}}">
                                                             {{$service->name}}

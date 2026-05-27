@@ -102,6 +102,7 @@ Route::name('admin.')->group(function() {
             Route::post('update/{id}','update')->name('update');
             Route::post('create','create')->name('create');
             Route::post('hours','hours')->name('hours');
+            Route::post('massdelete','massDelete')->name('massdelete');
         });
 
         Route::controller(NotesController::class)->middleware(['can:notes.list'])->prefix('notes')->name('notes.')->group(function () {
