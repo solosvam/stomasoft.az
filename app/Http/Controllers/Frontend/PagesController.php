@@ -30,7 +30,7 @@ class PagesController extends Controller
             ->where('clinic_name', '!=', '')
             ->where('name','!=','demo')
             ->with([
-                'services' => fn($q) => $q->withoutGlobalScope('doctor')->where('active', 1)
+                'services' => fn($q) => $q->withoutGlobalScope('doctor')->where('active', 1)->where('visible',1)
             ])
             ->orderBy('clinic_name')
             ->get();
