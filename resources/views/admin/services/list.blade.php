@@ -66,6 +66,9 @@
                                         <div class="col-2 col-sm-1 d-flex align-items-center">
                                             <div class="text-small">{{ __('price') }}</div>
                                         </div>
+                                        <div class="col-2 col-sm-1 d-flex align-items-center">
+                                            <div class="text-small">{{ __('show_on_site') }}</div>
+                                        </div>
                                         <div class="col-2 col-sm-1 d-flex align-items-center justify-content-end">
                                             <div class="text-small">{{ __('edit') }}</div>
                                         </div>
@@ -79,6 +82,7 @@
                                                         <div class="col-3 col-sm-6 d-flex align-items-center category">{{$service->name}}</div>
                                                         <div class="col-3 col-sm-3 d-flex align-items-center text-muted category">{{ $service->active ? __('active_status') : __('inactive_status') }}</div>
                                                         <div class="col-2 col-sm-1 d-flex align-items-center text-muted category">{{ $service->price }}</div>
+                                                        <div class="col-2 col-sm-1 d-flex align-items-center text-muted category">{{ $service->visible ? __('visible') : __('hidden') }}</div>
                                                         <div class="col-2 col-sm-1 d-flex align-items-center justify-content-sm-end text-muted sale">
                                                             <a href="{{route('admin.services.edit',$service->id)}}" class="btn btn-outline-secondary btn-sm ms-1" type="button">{{__('edit')}}</a>
                                                         </div>
@@ -110,6 +114,11 @@
 
                             <label>{{ __('price') }}</label>
                             <input type="text" name="price" class="form-control" placeholder="{{ __('price') }}" value="{{old('price')}}" required>
+                            <label>{{ __('show_on_site') }}</label>
+                            <select class="form-control form-select" name="visible">
+                                <option value="1">{{ __('show') }}</option>
+                                <option value="0">{{ __('hide') }}</option>
+                            </select>
                             <hr>
                             <button type="submit" class="btn btn-primary">{{ __('add') }}</button>
                         </form>

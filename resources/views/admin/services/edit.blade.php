@@ -57,6 +57,15 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
+                                    <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('show_on_site') }}</label>
+                                    <div class="col-sm-8 col-md-9 col-lg-10">
+                                        <select class="form-select" name="visible">
+                                            <option value="1" {{ $service->visible ? 'selected' : '' }}>{{ __('show') }}</option>
+                                            <option value="0" {{ !$service->visible ? 'selected' : '' }}>{{ __('hide') }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('price') }}</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
                                         <input type="text" class="form-control" name="price" value="{{$service->price}}" />

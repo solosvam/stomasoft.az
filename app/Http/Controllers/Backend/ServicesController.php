@@ -21,11 +21,11 @@ class ServicesController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|min:3',
             'price'    => 'required',
+            'visible'    => 'required',
+            'description'    => 'nullable',
         ],[
             'name.*'    => 'Xidmət adı minimum 3 hərfdən ibarət olmalıdır !'
         ]);
-
-        $validated['doctor_id'] = auth()->id();
 
         Services::create($validated);
 
@@ -47,6 +47,8 @@ class ServicesController extends Controller
             'name' => 'required|string|min:3',
             'active'    => 'required',
             'price'    => 'required',
+            'visible'    => 'required',
+            'description'    => 'nullable',
         ],[
             'name.*'    => 'Xidmət adı minimum 3 hərfdən ibarət olmalıdır !'
         ]);

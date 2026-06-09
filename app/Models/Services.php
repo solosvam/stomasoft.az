@@ -14,6 +14,7 @@ class Services extends Model
         'doctor_id',
         'name',
         'price',
+        'visible',
         'active'
     ];
 
