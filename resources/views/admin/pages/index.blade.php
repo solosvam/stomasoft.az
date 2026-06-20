@@ -286,7 +286,7 @@
                                pattern="[0-9]{10}"
                                inputmode="numeric"
                                class="form-control"
-                               placeholder="{{ __('mobile') }} 0103227575"
+                               placeholder="{{ __('mobile') }} 0504321103"
                                value="{{ old('mobile') }}"
                                required>
                         <label>{{ __('birth_date') }}</label>

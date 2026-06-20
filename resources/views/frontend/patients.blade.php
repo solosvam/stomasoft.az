@@ -541,7 +541,7 @@
     </div>
 
     <div class="nav-right">
-        <a href="tel:+994103227575" class="nav-phone d-none d-md-block">📞 +994 10 322 75 75</a>
+        <a href="tel:+994504321103" class="nav-phone d-none d-md-block">📞 +994 10 322 75 75</a>
 
         <div class="dropdown lang-dropdown">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -644,7 +644,7 @@
 
     {{-- Footer --}}
     <div class="page-footer">
-        <a href="tel:+994103227575" class="footer-link">+994 10 322 75 75</a>
+        <a href="tel:+994504321103" class="footer-link">+994 10 322 75 75</a>
         <div class="footer-sep"></div>
         <a href="{{ url('/') }}" class="footer-link">StomaSoft</a>
         <div class="footer-sep"></div>

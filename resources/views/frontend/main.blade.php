@@ -118,7 +118,7 @@
     <a class="nav-logo" href="#">Stoma<span>Soft</span></a>
 
     <div class="nav-right">
-        <a href="tel:+994103227575" class="nav-phone d-none d-md-block">
+        <a href="tel:+994504321103" class="nav-phone d-none d-md-block">
             📞 +994 10 322 75 75
         </a>
 
@@ -214,7 +214,7 @@
 
     {{-- Footer --}}
     <div class="page-footer">
-        <a href="tel:+994103227575" class="footer-link">+994 10 322 75 75</a>
+        <a href="tel:+994504321103" class="footer-link">+994 10 322 75 75</a>
         <div class="footer-sep"></div>
         <a href="https://demo.{{ config('app.domain') }}" class="footer-link">{{ __('welcome.demo') }}</a>
         <div class="footer-sep"></div>
