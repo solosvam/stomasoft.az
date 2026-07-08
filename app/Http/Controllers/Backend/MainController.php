@@ -8,6 +8,7 @@ use App\Models\PatientServiceSession;
 use App\Models\Reservation;
 use App\Models\Services;
 use App\Models\Settings;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -40,6 +41,10 @@ class MainController extends Controller
 
     private function buildReservationSlots($date, $doctorId)
     {
+        $doctor = User::find($doctorId);
+
+        [$workStart, $workEnd] = explode('-', $doctor->work_hours ?? '10:00-20:00');
+
         $reservations = Reservation::whereDate('date', $date->format('Y-m-d'))
             ->where('doctor_id', $doctorId)
             ->where('status', 'pending')
@@ -49,12 +54,17 @@ class MainController extends Controller
             });
 
         $slots = [];
-        $start = Carbon::createFromTime(10, 0);
-        $end   = Carbon::createFromTime(20, 0);
 
-        while ($start <= $end) {
+        $start = Carbon::parse($date->format('Y-m-d') . ' ' . $workStart);
+        $end   = Carbon::parse($date->format('Y-m-d') . ' ' . $workEnd);
+
+        if ($end->lte($start)) {
+            $end->addDay();
+        }
+
+        while ($start < $end) {
             $time = $start->format('H:i');
-            $slotDateTime = Carbon::parse($date->format('Y-m-d').' '.$time);
+            $slotDateTime = $start->copy();
 
             $slot = [
                 'time' => $time,
@@ -68,6 +78,7 @@ class MainController extends Controller
 
             if (isset($reservations[$time])) {
                 $reservation = $reservations[$time];
+
                 if ($reservation->patient_id) {
                     $slot['type'] = 'busy_patient';
                     $slot['url'] = route('admin.crm.info', ['id' => $reservation->patient_id]);
@@ -96,6 +107,17 @@ class MainController extends Controller
         $validated = $request->validate([
             'clinic_name' => 'required|string|max:255',
             'clinic_address' => 'nullable|string|max:500',
+            'work_hours' => [
+                'nullable',
+                'regex:/^(?:[01]\d|2[0-3]):[0-5]\d-(?:[01]\d|2[0-3]):[0-5]\d$/',
+            ],
+        ], [
+            'clinic_name.required' => 'Klinika adı mütləqdir.',
+            'clinic_name.max' => 'Klinika adı maksimum 255 simvol ola bilər.',
+
+            'clinic_address.max' => 'Klinika ünvanı maksimum 500 simvol ola bilər.',
+
+            'work_hours.regex' => 'İş saatı xx:xx-xx:xx formatında olmalıdır. Məsələn: 10:00-20:00',
         ]);
 
         auth()->user()->update($validated);

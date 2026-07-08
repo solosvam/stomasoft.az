@@ -47,6 +47,10 @@ class PagesController extends Controller
             return '';
         }
 
+        $doctor = User::find($doctorId);
+
+        [$workStart, $workEnd] = explode('-', $doctor->work_hours ?? '10:00-20:00');
+
         $busy = Reservation::whereDate('date', $date)
             ->where('doctor_id', $doctorId)
             ->where('status', 'pending')
@@ -54,19 +58,25 @@ class PagesController extends Controller
             ->map(fn($hour) => Carbon::parse($hour)->format('H:i'))
             ->toArray();
 
-        $start   = Carbon::createFromTime(10, 0);
-        $end     = Carbon::createFromTime(20, 0);
-        $now     = now(); // ← cari vaxt
-        $isToday = Carbon::parse($date)->isToday(); // ← seçilən gün bugündürmü?
+        $selectedDate = Carbon::parse($date);
+
+        $start = Carbon::parse($selectedDate->format('Y-m-d') . ' ' . $workStart);
+        $end   = Carbon::parse($selectedDate->format('Y-m-d') . ' ' . $workEnd);
+
+        if ($end->lte($start)) {
+            $end->addDay();
+        }
+
+        $now     = now();
+        $isToday = $selectedDate->isToday();
 
         $html  = '<label>Saat seçin</label>';
         $html .= '<div class="d-flex flex-wrap gap-2 mt-2">';
 
-        while ($start <= $end) {
+        while ($start < $end) {
             $time = $start->format('H:i');
             $id   = $start->format('Hi');
 
-            // Bugündirsə və saat artıq keçibsə — passiv et
             $isPast = $isToday && $start->lt($now);
             $isBusy = in_array($time, $busy);
 

@@ -40,14 +40,21 @@
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Klinika adı</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <input type="text" class="form-control" name="clinic_name" value="{{ old('clinic_name',$user->clinic_name) }}" />
+                                        <input type="text" class="form-control" name="clinic_name" placeholder="Klinika adı" value="{{ old('clinic_name',$user->clinic_name) }}" />
                                     </div>
                                 </div>
 
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Klinika Ünvanı</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <input type="text" class="form-control" name="clinic_address" value="{{ old('clinic_address',$user->clinic_address) }}" />
+                                        <input type="text" class="form-control" name="clinic_address" placeholder="Klinika ünvanı" value="{{ old('clinic_address',$user->clinic_address) }}" />
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">İş saatları</label>
+                                    <div class="col-sm-8 col-md-9 col-lg-10">
+                                        <input type="text" class="form-control" name="work_hours" placeholder="10:00-20:00" value="{{ old('work_hours',$user->work_hours) }}" />
                                     </div>
                                 </div>
 
