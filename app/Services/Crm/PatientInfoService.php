@@ -6,6 +6,7 @@ use App\Models\Partner;
 use App\Models\PartnerDoctorPatientBalance;
 use App\Models\PartnerLedger;
 use App\Models\Patient;
+use App\Models\PatientDepositLedger;
 use App\Models\PatientDoctorBalance;
 use App\Models\PatientLedger;
 use App\Models\Reservation;
@@ -23,6 +24,7 @@ class PatientInfoService
             $this->getBaseData($patient, $userId),
             $this->getFinancialData($patient, $userId),
             $this->getLedgerData($patient),
+            $this->getDepositData($patient),
             $this->getDoctorTotals($patient),
             $this->getPartnerPatientBalances($patient, $userId),
             ['slots' => $this->generateSlots()]
@@ -80,6 +82,26 @@ class PatientInfoService
 
         return [
             'rows' => $rows,
+        ];
+    }
+
+    private function getDepositData(Patient $patient): array
+    {
+        $depositRows = PatientDepositLedger::with('doctor')
+            ->where('patient_id', $patient->id)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get()
+            ->map(function ($row) {
+                $row->signed_amount = $row->type === 'payment'
+                    ? -abs((float) $row->amount)
+                    : abs((float) $row->amount);
+
+                return $row;
+            });
+
+        return [
+            'depositRows' => $depositRows,
         ];
     }
 

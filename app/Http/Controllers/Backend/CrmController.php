@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\AddPatientServiceRequest;
 use App\Http\Requests\Backend\PatientPayRequest;
 use App\Http\Requests\Backend\UpdatePatientSessionRequest;
+use App\Models\CashierLedger;
+use App\Models\DoctorCashBalance;
 use App\Models\Patient;
+use App\Models\PatientDepositLedger;
 use App\Models\PatientDoctorBalance;
+use App\Models\PatientDoctorDeposit;
 use App\Models\PatientLedger;
 use App\Models\PatientServiceSession;
 use App\Models\PatientServiceSessionItems;
@@ -54,6 +58,93 @@ class CrmController extends Controller
             return back()->with('success', 'ödəmə qeydə alındı');
         } catch (\Exception $e) {
             return back()->withErrors(['amount' => $e->getMessage()])->withInput();
+        }
+    }
+
+    public function deposit(Request $request, int $id): RedirectResponse
+    {
+        $validated = $request->validate([
+            'amount' => ['required', 'numeric', 'min:0.01'],
+            'method' => ['required', 'in:cash,pos,c2c'],
+            'note'   => ['nullable', 'string', 'max:500'],
+        ]);
+
+        try {
+            DB::transaction(function () use ($id, $validated) {
+                $cashierId = (int) auth()->id();
+                $doctorId  = $cashierId;
+                $amount    = round((float) $validated['amount'], 2);
+                $method    = $validated['method'];
+                $note      = $validated['note'] ?? null;
+
+                $patient = Patient::where('id', $id)
+                    ->where('user_id', $cashierId)
+                    ->firstOrFail();
+
+                $deposit = PatientDoctorDeposit::where('patient_id', $patient->id)
+                    ->where('doctor_id', $doctorId)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($deposit) {
+                    $deposit->increment('deposit', $amount);
+
+                    $deposit->update([
+                        'updated_at' => now(),
+                    ]);
+                } else {
+                    PatientDoctorDeposit::create([
+                        'patient_id' => $patient->id,
+                        'doctor_id'  => $doctorId,
+                        'deposit'    => $amount,
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                PatientDepositLedger::create([
+                    'patient_id' => $patient->id,
+                    'doctor_id'  => $doctorId,
+                    'cashier_id' => $cashierId,
+                    'type'       => 'deposit',
+                    'method'     => $method,
+                    'amount'     => $amount,
+                    'note'       => $note,
+                    'created_at' => now(),
+                ]);
+
+                CashierLedger::create([
+                    'cashier_id' => $cashierId,
+                    'doctor_id'  => $doctorId,
+                    'patient_id' => $patient->id,
+                    'partner_id' => null,
+                    'type'       => 'patient_payment',
+                    'method'     => $method,
+                    'amount'     => $amount,
+                    'note'       => $note,
+                    'created_at' => now(),
+                ]);
+
+                $doctorCashBalance = DoctorCashBalance::where('doctor_id', $doctorId)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($doctorCashBalance) {
+                    $doctorCashBalance->increment('balance', $amount);
+                } else {
+                    DoctorCashBalance::create([
+                        'doctor_id' => $doctorId,
+                        'balance'   => $amount,
+                    ]);
+                }
+            });
+
+            return back()->with('success', 'Depozit əlavə edildi');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()
+                ->withErrors(['amount' => $e->getMessage()])
+                ->withInput();
         }
     }
 

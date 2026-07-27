@@ -17,7 +17,7 @@ class PatientPayRequest extends FormRequest
             'mode'      => ['required', 'in:doctor,total'],
             'doctor_id' => ['nullable', 'integer'],
             'amount'    => ['required', 'numeric', 'min:0.01'],
-            'method'    => ['required', 'in:cash,pos,c2c'],
+            'method'    => ['required', 'in:cash,pos,c2c,deposit'],
             'note'      => ['nullable', 'string', 'max:255'],
         ];
     }

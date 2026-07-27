@@ -99,6 +99,15 @@
 
                         <div class="mb-2">
                             <div class="row g-0 align-items-center mb-2">
+                                <button type="button" class="btn btn-outline-info w-100 me-2" data-bs-toggle="modal" data-bs-target="#showDepositLogs">
+                                    <i data-acorn-icon="dollar" data-acorn-size="16" class="me-1"></i>
+                                    Depozit {{$patient->total_deposit}} ₼
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <div class="row g-0 align-items-center mb-2">
                                 <button type="button" class="btn btn-outline-dark w-100 me-2" data-bs-toggle="modal" data-bs-target="#partnerAction">
                                     <i data-acorn-icon="pharmacy" data-acorn-size="16" class="me-1"></i>
                                     {{ __('partner') }} {{$patient->partnerBalances()->sum('balance')}} ₼
@@ -274,8 +283,7 @@
 
 
 
-        <div class="modal fade modal-close-out" id="showBalanceLogs" data-bs-backdrop="static" data-bs-keyboard="false"
-             tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade modal-close-out" id="showBalanceLogs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header p-3">
@@ -286,6 +294,43 @@
                     <div class="modal-body">
                         @include('admin.crm.partial._balance_doctors')
                         @include('admin.crm.partial._balance_history')
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade modal-close-out" id="showDepositLogs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header p-3">
+                        <h5 class="modal-title">Deposit arxivi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form method="POST" action="{{ route('admin.crm.deposit', $patient->id) }}">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <input type="number" class="form-control" name="amount" placeholder="Məbləğ">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="note" placeholder="Qeyd">
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select" name="method" required>
+                                        <option value="cash">{{__('cash')}}</option>
+                                        <option value="pos">{{__('pos')}}</option>
+                                        <option value="c2c">{{__('c2c')}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary">Əlavə et</button>
+                                </div>
+                            </div>
+                        </form>
+                        <hr>
+                        @include('admin.crm.partial._deposit_history')
                     </div>
                 </div>
             </div>

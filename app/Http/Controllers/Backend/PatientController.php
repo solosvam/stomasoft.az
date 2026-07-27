@@ -8,6 +8,7 @@ use App\Models\PatientDoctorBalance;
 use App\Models\PatientFiles;
 use App\Models\PatientServiceSessionItems;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\Backend\PatientCreateRequest;
 use Illuminate\Support\Facades\Auth;
@@ -64,6 +65,43 @@ class PatientController extends Controller
         return view('admin.patient.edit', [
             'patient' => $patient
         ]);
+    }
+
+    public function delete(int $id): RedirectResponse
+    {
+        try {
+            DB::transaction(function () use ($id) {
+                $patient = Patient::where('id', $id)
+                    ->where('user_id', auth()->id())
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                $hasOperation =
+                    $patient->sessions()->exists()
+                    || $patient->doctorBalances()->exists()
+                    || $patient->partnerBalances()->exists()
+                    || $patient->files()->exists()
+                    || $patient->prescriptions()->exists()
+                    || $patient->doctorDeposit()->exists()
+                    || $patient->ledgers()->exists()
+                    || $patient->depositLedgers()->exists()
+                    || $patient->reservations()->exists();
+
+                if ($hasOperation) {
+                    throw new \Exception('pasiyent üzrə əməliyyat olduğu üçün silinə bilməz');
+                }
+
+                $patient->delete();
+            });
+
+            return redirect()
+                ->route('admin.crm.index')
+                ->with('success', 'Pasiyent silindi');
+        } catch (\Throwable $e) {
+            return back()->withErrors([
+                'delete' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function update(Request $request, $id)

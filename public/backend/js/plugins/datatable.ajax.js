@@ -93,6 +93,7 @@ class RowsAjax {
                           <div class="d-flex gap-2">
                             <a href="/crm/${row.id}" class="btn btn-primary btn-sm">CRM</a>
                             <a href="/patient/edit/${row.id}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="/patient/delete/${row.id}" class="btn btn-danger btn-sm">Sil</a>
                           </div>`;
                     }
                 }

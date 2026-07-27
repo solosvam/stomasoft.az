@@ -133,6 +133,7 @@ Route::name('admin.')->group(function() {
             Route::get('debtors','debtors')->name('debtors');
             Route::get('active-services','activeServices')->name('activeServices');
             Route::get('edit/{id}','edit')->name('edit');
+            Route::get('delete/{id}','delete')->name('delete');
             Route::post('add','create')->name('add');
             Route::post('update/{id}','update')->name('update');
             Route::get('{patient}/worked-teeth','workedTeeth')->name('workedTeeth');
@@ -153,6 +154,7 @@ Route::name('admin.')->group(function() {
             Route::post('addservice/{id}','addService')->name('addservice');
             Route::post('addprescription/{id}','addPrescription')->name('addprescription');
             Route::post('{id}/pay','pay')->name('pay');
+            Route::post('{id}/deposit','deposit')->name('deposit');
             Route::get('session/{id}/edit', 'editSession')->name('session.edit');
             Route::get('session/{id}/delete', 'deleteSession')->name('session.delete');
             Route::post('session/{id}/update', 'updateSession')->name('session.update');

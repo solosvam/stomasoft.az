@@ -5,7 +5,9 @@ namespace App\Services\Crm;
 use App\Models\CashierLedger;
 use App\Models\DoctorCashBalance;
 use App\Models\Patient;
+use App\Models\PatientDepositLedger;
 use App\Models\PatientDoctorBalance;
+use App\Models\PatientDoctorDeposit;
 use App\Models\PatientLedger;
 use Illuminate\Support\Facades\DB;
 
@@ -40,6 +42,36 @@ class PatientPaymentService
 
             if ($amount > $currentBalance) {
                 throw new \Exception('məbləğ bu həkimin borcundan çox ola bilməz');
+            }
+
+            if ($method === 'deposit') {
+                $deposit = PatientDoctorDeposit::where('patient_id', $patient->id)
+                    ->where('doctor_id', $doctorId)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$deposit || (float) $deposit->deposit <= 0) {
+                    throw new \Exception('bu həkim üzrə depozit yoxdur');
+                }
+
+                $currentDeposit = round((float) $deposit->deposit, 2);
+
+                if ($amount > $currentDeposit) {
+                    throw new \Exception('ödəniş məbləği depozitdən çox ola bilməz');
+                }
+
+                $patientDoctorBalance->decrement('balance', $amount);
+                $deposit->decrement('deposit', $amount);
+
+                $deposit->update([
+                    'updated_at' => now(),
+                ]);
+
+                $this->createPatientLedger($patient->id, $doctorId, $cashierId, $amount, $method, $note);
+
+                $this->createDepositLedger($patient->id, $doctorId, $cashierId, $amount, $note);
+
+                return;
             }
 
             $patientDoctorBalance->decrement('balance', $amount);
@@ -86,6 +118,24 @@ class PatientPaymentService
             'partner_id' => null,
             'type'       => 'patient_payment',
             'method'     => $method,
+            'amount'     => $amount,
+            'note'       => $note,
+            'created_at' => now(),
+        ]);
+    }
+
+    private function createDepositLedger(
+        int $patientId,
+        int $doctorId,
+        int $cashierId,
+        float $amount,
+        ?string $note
+    ): void {
+        PatientDepositLedger::create([
+            'patient_id' => $patientId,
+            'doctor_id'  => $doctorId,
+            'cashier_id' => $cashierId,
+            'type'       => 'payment',
             'amount'     => $amount,
             'note'       => $note,
             'created_at' => now(),

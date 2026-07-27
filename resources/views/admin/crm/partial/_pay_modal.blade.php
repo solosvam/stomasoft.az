@@ -29,6 +29,7 @@
                         <option value="cash">{{__('cash')}}</option>
                         <option value="pos">{{__('pos')}}</option>
                         <option value="c2c">{{__('c2c')}}</option>
+                        <option value="deposit">Deposit</option>
                     </select>
                 </div>
 
