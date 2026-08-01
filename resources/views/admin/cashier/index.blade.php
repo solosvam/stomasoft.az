@@ -342,7 +342,7 @@
                         <form method="POST" action="{{route('admin.cashier.expence')}}">
                             @csrf
                             <label>{{ __('amount') }}</label>
-                            <input name="amount" type="number" step="0.01" max="10000" min="0.1" class="form-control" placeholder="{{ __('enter_amount') }}" value="{{old('amount')}}" required>
+                            <input name="amount" type="number" step="0.01" max="100000" min="0.1" class="form-control" placeholder="{{ __('enter_amount') }}" value="{{old('amount')}}" required>
                             <label>{{ __('expense_description') }}</label>
                             <textarea name="description" class="form-control" rows="3" placeholder="{{ __('write_exoense_detail') }}" required>{{old('description')}}</textarea>
                             <button type="submit" class="btn btn-primary mt-2">{{__('add')}}</button>
