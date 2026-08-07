@@ -97,6 +97,24 @@
                                     </div>
                                 </div>
 
+                                <div class="mb-3 row">
+                                    <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Baş həkim</label>
+                                    <div class="col-sm-8 col-md-9 col-lg-10">
+                                        <select class="form-control" name="parent_id">
+                                            <option value="">Baş həkim deyil</option>
+
+                                            @foreach($users as $doctor)
+                                                @if($doctor->id != $user->id)
+                                                    <option value="{{ $doctor->id }}"
+                                                        {{ $user->parent_id == $doctor->id ? 'selected' : '' }}>
+                                                        {{ $doctor->name }} {{ $doctor->surname }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="mb-3 row mt-5">
                                     <div class="col-sm-8 col-md-9 col-lg-10 ms-auto">
                                         <button type="submit" class="btn btn-primary">{{ __('update') }}</button>

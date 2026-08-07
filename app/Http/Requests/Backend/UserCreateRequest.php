@@ -30,7 +30,8 @@ class UserCreateRequest extends FormRequest
             'mobile'    => 'required|regex:/^[0-9]{12}$/',
             'login'     => 'required|unique:user,login',
             'password'  => 'required|string|min:6|max:20',
-            'is_doctor' => 'required'
+            'is_doctor' => 'required',
+            'parent_id' => 'nullable'
         ];
     }
 

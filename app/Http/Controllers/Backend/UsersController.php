@@ -17,18 +17,25 @@ class UsersController extends Controller
 {
     public function index()
     {
+        $authUser = auth()->user();
+
         $users = User::withCount([
             'services' => function ($query) {
                 $query->withoutGlobalScope('doctor');
             },
             'patients',
             'partners',
-        ])->get();
+        ])
+            ->when($authUser->id !== 1, function ($query) use ($authUser) {
+                $query->where('parent_id', $authUser->id);
+            })
+            ->get();
+
         $roles = Role::all();
 
-        return view('admin.users.list',[
-            'users'    => $users,
-            'roles'     => $roles
+        return view('admin.users.list', [
+            'users' => $users,
+            'roles' => $roles,
         ]);
     }
 
@@ -44,10 +51,19 @@ class UsersController extends Controller
 
     public function edit($id)
     {
+        $authUser = auth()->user();
+
+        if ($authUser->id != 1) {
+            abort( 403);
+        }
+
         $user = User::findOrFail($id);
+        $users = User::all();
         $roles = Role::all();
-        return view('admin.users.edit',[
+
+        return view('admin.users.edit', [
             'user' => $user,
+            'users' => $users,
             'roles' => $roles,
         ]);
     }
@@ -76,6 +92,12 @@ class UsersController extends Controller
             'role_name.exists'    => 'Rol tapılmadı',
         ]);
 
+        $authUser = auth()->user();
+
+        if ($authUser->id != 1) {
+            abort( 403);
+        }
+
         $user = User::findOrFail($request->id);
 
         $user->name = $request->name;
@@ -84,6 +106,7 @@ class UsersController extends Controller
         $user->mobile = $request->mobile;
         $user->is_active = $request->is_active;
         $user->is_doctor = $request->is_doctor;
+        $user->parent_id = $request->parent_id;
         if($request->password){
             $user->password = Hash::make($request->password);
         }

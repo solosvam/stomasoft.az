@@ -27,7 +27,8 @@ class User extends Authenticatable
         "subscription_ends_at",
         "clinic_name",
         "clinic_address",
-        "work_hours"
+        "work_hours",
+        "parent_id"
     ];
     protected $appends = ['fullname'];
 

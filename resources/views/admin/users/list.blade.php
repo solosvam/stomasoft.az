@@ -117,6 +117,7 @@
                                         <td class="text-alternate">{{$admin->partners_count}}</td>
                                         <td class="text-alternate">{{$admin->services_count}}</td>
                                         <td class="text-alternate">
+                                            @if(auth()->id() == 1)
                                             <a href="{{route('admin.edit',$admin->id)}}" class="btn btn-primary btn-sm">{{ __('edit') }}</a>
                                             <button class="btn btn-sm btn-warning subscriptionBtn"
                                                     data-url="{{ route('admin.subscription', $admin->id) }}"
@@ -124,6 +125,7 @@
                                                     data-bs-target="#subscriptionModal">
                                                 Abunəlik
                                             </button>
+                                            @endif
                                             <a href="{{ route('admin.impersonate', $admin->id) }}"
                                                class="btn btn-sm btn-outline-danger">
                                                 👁 Giriş et
@@ -170,6 +172,13 @@
                             <select class="form-select" name="is_doctor" required>
                                 <option value="1">{{ __('yes') }}</option>
                                 <option value="0">{{ __('no_text') }}</option>
+                            </select>
+                            <label>Baş həkim</label>
+                            <select class="form-select" name="parent_id" required>
+                                <option value="">{{ __('select') }}</option>
+                                @foreach($users as $user)
+                                    <option value="{{$user->id}}">{{ $user->fullname }}</option>
+                                @endforeach
                             </select>
                             <hr>
                             <button type="submit" class="btn btn-primary">{{ __('add') }}</button>
