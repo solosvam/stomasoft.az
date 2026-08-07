@@ -101,7 +101,7 @@
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Baş həkim</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
                                         <select class="form-control" name="parent_id">
-                                            <option value="">Baş həkim deyil</option>
+                                            <option value="">Baş həkimi seçin</option>
 
                                             @foreach($users as $doctor)
                                                 @if($doctor->id != $user->id)
