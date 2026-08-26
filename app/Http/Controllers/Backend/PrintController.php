@@ -16,13 +16,17 @@ class PrintController extends Controller
             ->with([
                 'sessions' => function ($q) {
                     $q->where('status', 1)
-                        ->with(['items.service'])
+                        ->with([
+                            'items.service',
+                            'items.location',
+                        ])
                         ->orderBy('date', 'desc');
                 }
             ])
             ->firstOrFail();
 
-        $totalDebt = PatientDoctorBalance::where('patient_id', $patient->id)->sum('balance');
+        $totalDebt = PatientDoctorBalance::where('patient_id', $patient->id)
+            ->sum('balance');
 
         return view('admin.print.service', [
             'patient'   => $patient,

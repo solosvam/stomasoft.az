@@ -176,7 +176,7 @@
     <thead>
     <tr>
         <th style="width:8%;">#</th>
-        <th style="width:12%;">{{ __('tooth') }}</th>
+        <th style="width:12%;">Zona</th>
         <th style="width:34%;">{{ __('service') }}</th>
         <th class="text-right" style="width:15%;">{{ __('price') }}</th>
         <th class="text-right" style="width:13%;">{{ __('discount') }}.</th>
@@ -198,7 +198,13 @@
             @endphp
             <tr>
                 <td>{{ $row++ }}</td>
-                <td>{{ $item->location_id }}</td>
+                <td>
+                    @if($item->location)
+                        {{ $item->location->name }}
+                    @else
+                        -
+                    @endif
+                </td>
                 <td>{{ $item->service->name ?? '-' }}</td>
                 <td class="text-right">{{ number_format($price, 2) }}</td>
                 <td class="text-right">
