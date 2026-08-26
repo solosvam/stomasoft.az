@@ -53,6 +53,22 @@
 .teeth.worked.selected{
     fill:#2d9cff !important;
 }
+
+.map-zone {
+    cursor: pointer;
+}
+.map-zone.selected {
+    fill: #2d9cff !important;
+    stroke: #2d9cff !important;
+}
+.map-zone.worked {
+    fill: #ff3b30bf !important;
+    stroke: #000000 !important;
+}
+.map-zone.worked.selected {
+    fill: #2d9cff !important;
+    stroke: #2d9cff !important;
+}
 #dropzoneServerFiles{
     min-height:100px;
     position:relative;

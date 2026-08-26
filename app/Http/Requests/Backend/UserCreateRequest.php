@@ -31,7 +31,8 @@ class UserCreateRequest extends FormRequest
             'login'     => 'required|unique:user,login',
             'password'  => 'required|string|min:6|max:20',
             'is_doctor' => 'required',
-            'parent_id' => 'nullable'
+            'parent_id' => 'nullable',
+            'specialty_id' => 'nullable|exists:specialties,id'
         ];
     }
 

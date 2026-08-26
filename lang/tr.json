@@ -75,6 +75,7 @@
     "select_service": "Hizmet seçin",
     "price": "Fiyat",
     "ctrl_select_teeth": "CTRL tuşunu basılı tutarak birden fazla diş seçebilirsiniz",
+    "ctrl_select_zones": "CTRL tuşunu basılı tutarak birden fazla bölge seçebilirsiniz",
     "balance_history": "Bakiye geçmişi",
     "profit_report": "Kazanç raporu",
     "patient_total_income": "Bu hastadan elde edilen toplam gelir",

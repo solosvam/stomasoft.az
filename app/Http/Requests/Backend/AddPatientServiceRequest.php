@@ -14,8 +14,8 @@ class AddPatientServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tooth_id'      => 'required|array|min:1',
-            'tooth_id.*'    => 'required|integer|min:1',
+            'location_id'      => 'required|array|min:1',
+            'location_id.*'    => 'required|integer|min:1',
 
             'service_id'    => 'required|array|min:1',
             'service_id.*'  => 'required|integer|exists:services,id',
@@ -38,11 +38,11 @@ class AddPatientServiceRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'tooth_id.required'       => 'Diş seç',
-            'tooth_id.array'          => 'Diş seçimi yanlışdır',
-            'tooth_id.*.required'     => 'Diş seç',
-            'tooth_id.*.integer'      => 'Diş seçimi yanlışdır',
-            'tooth_id.*.min'          => 'Diş seçimi yanlışdır',
+            'location_id.required'       => 'Diş seç',
+            'location_id.array'          => 'Diş seçimi yanlışdır',
+            'location_id.*.required'     => 'Diş seç',
+            'location_id.*.integer'      => 'Diş seçimi yanlışdır',
+            'location_id.*.min'          => 'Diş seçimi yanlışdır',
 
             'service_id.*.required'   => 'Xidmət seç',
             'service_id.*.exists'     => 'Xidmət tapılmadı',

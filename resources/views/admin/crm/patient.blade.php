@@ -14,10 +14,6 @@
     <link rel="stylesheet" href="{{asset('backend/css/crm.packages.table.css')}}"/>
     <link rel="stylesheet" href="{{asset('backend/css/vendor/dropzone.min.css')}}"/>
 @endsection
-@section('js_page')
-    <script src="{{ asset('backend/js/vendor/dropzone.min.js') }}"></script>
-    <script src="{{asset('backend/js/cs/dropzone.templates.js')}}"></script>
-@endsection
 @section('content')
     <div class="container">
         <!-- Title and Top Buttons Start -->
@@ -148,56 +144,102 @@
             <!-- Left Side End -->
 
             <!-- Right Side Start -->
+
             <div class="col-12 col-xl-9 col-xxl-9">
                 @foreach($patient->sessions as $session)
                     <div class="card mb-2">
                         <div class="card-body p-3">
                             <table class="table table-sm mb-0">
                                 <tbody>
+
                                 <tr class="table-header-1">
                                     <td colspan="2"><strong>{{ $session->doctor->fullname }}</strong></td>
                                     <td colspan="1"><strong>{{ __('date') }} : {{$session->date}}</strong></td>
                                     <td colspan="2"><strong>{{ __('total_price') }} : {{$session->total_cost}} AZN</strong></td>
                                     <td colspan="1"><strong>{{ __('general_note') }} : {{($session->note) ?? '---'}}</strong></td>
+
                                     <td>
                                         @if($session->status == 1)
+
                                             <a href="{{ route('admin.crm.session.edit', $session->id) }}"
                                                class="badge bg-warning text-decoration-none">
                                                 {{ __('edit') }}
                                             </a>
+
                                             <a href="{{ route('admin.crm.finishSession', $session->id) }}"
                                                class="badge bg-dark text-decoration-none">
                                                 {{ __('finish_service') }}
                                             </a>
+
                                             <a href="{{ route('admin.crm.session.delete', $session->id) }}"
                                                class="badge bg-danger text-decoration-none">
                                                 {{ __('delete') }}
                                             </a>
+
                                         @else
-                                            <span class="badge bg-success">{{ __('service_finished') }}</span>
+
+                                            <span class="badge bg-success">
+                                    {{ __('service_finished') }}
+                                </span>
+
                                         @endif
                                     </td>
                                 </tr>
+
                                 <tr class="table-header-2">
                                     <th>{{ __('no') }}</th>
-                                    <th>{{ __('tooth') }}</th>
+                                    <th>Zona</th>
                                     <th>{{ __('service') }}</th>
                                     <th>{{ __('amount') }}</th>
                                     <th>{{ __('discount') }}</th>
                                     <th>{{ __('total_price') }}</th>
                                     <th>{{ __('note') }}</th>
                                 </tr>
+
                                 @foreach($session->items as $item)
                                     <tr class="table-body">
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->tooth_id }}</td>
-                                        <td>{{ $item->service->name }}</td>
-                                        <td>{{ $item->price }} AZN</td>
-                                        <td>{{ $item->percent }} %</td>
-                                        <td>{{ $item->price_net }} AZN</td>
-                                        <td>{{ ($item->note) ?? '---' }}</td>
+
+                                        <td>
+                                            {{ $loop->iteration }}
+                                        </td>
+
+                                        <td>
+                                            @if($item->location)
+                                                {{ $item->location->name }}
+
+                                                @if($item->location->type === 'tooth_map')
+                                                    <small class="text-muted">
+                                                        ({{ $item->location->code }})
+                                                    </small>
+                                                @endif
+                                            @else
+                                                ---
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            {{ $item->service->name ?? '---' }}
+                                        </td>
+
+                                        <td>
+                                            {{ $item->price }} AZN
+                                        </td>
+
+                                        <td>
+                                            {{ $item->percent }} %
+                                        </td>
+
+                                        <td>
+                                            {{ $item->price_net }} AZN
+                                        </td>
+
+                                        <td>
+                                            {{ $item->note ?? '---' }}
+                                        </td>
+
                                     </tr>
                                 @endforeach
+
                                 </tbody>
                             </table>
                         </div>
@@ -208,7 +250,7 @@
         </div>
 
         <div class="modal fade modal-close-out" id="addServiceModal" data-bs-backdrop="static" data-bs-keyboard="false"
-             tabindex="-1" role="dialog" aria-hidden="true" data-worked-url="{{ route('admin.patient.workedTeeth', $patient->id) }}">
+             tabindex="-1" role="dialog" aria-hidden="true" data-worked-url="{{ route('admin.patient.workedLocations', $patient->id) }}">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header p-3">
@@ -225,11 +267,32 @@
                                         </option>
                                     @endforeach
                                 </div>
+                                @php
+                                    $locationMap = auth()->user()->locationMap();
+
+                                    if ($locationMap === 'full_body_map') {
+                                        $locationMapPartial = $patient->sex == 0
+                                            ? 'admin.crm.partial.maps._full_body_map_female'
+                                            : 'admin.crm.partial.maps._full_body_map_male';
+                                    } else {
+                                        $locationMapPartial = 'admin.crm.partial.maps._' . $locationMap;
+                                    }
+                                @endphp
                                 <div class="mb-3">
-                                    <footer class="blockquote-footer">
-                                        <cite>{{ __('ctrl_select_teeth') }}</cite>
-                                    </footer>
-                                    @include('admin.crm.partial._teeth_map')
+                                    @if($locationMap === 'tooth_map')
+                                        <footer class="blockquote-footer">
+                                            <cite>{{ __('ctrl_select_teeth') }}</cite>
+                                        </footer>
+                                    @elseif($locationMap === 'full_body_map')
+                                        <footer class="blockquote-footer">
+                                            <cite>{{ __('ctrl_select_zones') }}</cite>
+                                        </footer>
+                                    @endif
+                                    @if(view()->exists($locationMapPartial))
+                                        @include($locationMapPartial)
+                                    @else
+                                        <div class="alert alert-warning mb-0">Bu ixtisas üçün bədən xəritəsi hələ hazır deyil.</div>
+                                    @endif
                                 </div>
                             </div>
 
@@ -281,8 +344,6 @@
             </div>
         </div>
 
-
-
         <div class="modal fade modal-close-out" id="showBalanceLogs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -299,6 +360,7 @@
             </div>
         </div>
 
+        <!-- Deosit Modal -->
         <div class="modal fade modal-close-out" id="showDepositLogs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -335,7 +397,9 @@
                 </div>
             </div>
         </div>
+        <!-- Deosit Modal -->
 
+        <!-- Resept Modal -->
         <div class="modal fade modal-close-out" id="prescription" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -351,7 +415,9 @@
                 </div>
             </div>
         </div>
+        <!-- Resept Modal -->
 
+        <!-- Profit Modal -->
         <div class="modal fade modal-close-out" id="profitModal" data-bs-backdrop="static" data-bs-keyboard="false"
              tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
@@ -369,7 +435,9 @@
                 </div>
             </div>
         </div>
+        <!-- Profit Modal -->
 
+        <!-- Reservation Modal -->
         <div class="modal fade modal-close-out" id="reservation" data-bs-backdrop="static" data-bs-keyboard="false"
              tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -386,16 +454,18 @@
                 </div>
             </div>
         </div>
+        <!-- Reservation Modal -->
 
-        <div class="modal fade" id="toothServicesModal" tabindex="-1">
+
+        <div class="modal fade" id="locationServicesModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content border-0 shadow-lg">
                     <div class="modal-header bg-dark text-white">
-                        <h5 class="modal-title" id="toothServicesModalTitle">{{__('tooth_services')}}</h5>
+                        <h5 class="modal-title" id="locationServicesModalTitle">{{__('tooth_services')}}</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
 
-                    <div class="modal-body bg-light p-3" id="toothServicesModalBody">
+                    <div class="modal-body bg-light p-3" id="locationServicesModalBody">
                         Yüklənir...
                     </div>
                 </div>
@@ -479,5 +549,16 @@
 
         @include('admin.crm.partial._pay_modal')
     </div>
+@endsection
+@section('js_page')
+    <script src="{{ asset('backend/js/vendor/dropzone.min.js') }}"></script>
+    <script src="{{asset('backend/js/cs/dropzone.templates.js')}}"></script>
+    <script>
+        const locationMap = @json(
+        $locations->mapWithKeys(fn($location) => [
+            (string) $location->code => $location->id
+        ])
+    );
+    </script>
 @endsection
 

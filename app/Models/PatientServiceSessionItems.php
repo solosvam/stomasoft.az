@@ -13,7 +13,7 @@ class PatientServiceSessionItems extends Model
     protected $fillable = [
         'session_id',
         'service_id',
-        'tooth_id',
+        'location_id',
         'note',
         'price',
         'percent',
@@ -28,6 +28,14 @@ class PatientServiceSessionItems extends Model
     public function session(): BelongsTo
     {
         return $this->belongsTo(PatientServiceSession::class, 'session_id', 'id');
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(
+            ServiceLocation::class,
+            'location_id'
+        );
     }
 
 }

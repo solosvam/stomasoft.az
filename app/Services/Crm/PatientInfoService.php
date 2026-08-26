@@ -33,7 +33,15 @@ class PatientInfoService
 
     private function getPatient(int $patientId, int $userId): Patient
     {
-        return Patient::where('id', $patientId)
+        return Patient::with([
+            'sessions' => function ($query) {
+                $query->orderByDesc('id');
+            },
+            'sessions.doctor',
+            'sessions.items.service',
+            'sessions.items.location',
+        ])
+            ->where('id', $patientId)
             ->where('user_id', $userId)
             ->firstOrFail();
     }

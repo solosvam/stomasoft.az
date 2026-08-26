@@ -444,27 +444,40 @@ document.querySelectorAll('#addServiceModal .teeth').forEach(el => {
         const cls = [...el.classList].find(c => /^tooth-\d+$/.test(c));
         if (!cls) return;
 
-        const toothNo = parseInt(cls.split('-')[1]);
+        const toothNo = cls.split('-')[1];
+        const locationId = parseInt(locationMap[toothNo]);
+
+        if (!locationId) {
+            console.error('Location tapılmadı:', toothNo);
+            return;
+        }
 
         if (e.shiftKey) {
             if (el.classList.contains('worked')) {
-                openToothServicesModal(toothNo);
+                openLocationServicesModal(locationId);
             }
             return;
         }
 
         if (e.ctrlKey || e.metaKey) {
-            if (selectedTeeth.includes(toothNo)) {
-                selectedTeeth = selectedTeeth.filter(id => id !== toothNo);
+            if (selectedTeeth.includes(locationId)) {
+
+                selectedTeeth = selectedTeeth.filter(id => id !== locationId);
+
                 document.querySelectorAll(`#addServiceModal .tooth-${toothNo}`)
                     .forEach(x => x.classList.remove('selected'));
+
             } else {
-                selectedTeeth.push(toothNo);
+
+                selectedTeeth.push(locationId);
+
                 document.querySelectorAll(`#addServiceModal .tooth-${toothNo}`)
                     .forEach(x => x.classList.add('selected'));
             }
+
         } else {
-            selectedTeeth = [toothNo];
+
+            selectedTeeth = [locationId];
 
             document.querySelectorAll('#addServiceModal .teeth.selected')
                 .forEach(x => x.classList.remove('selected'));
@@ -473,49 +486,159 @@ document.querySelectorAll('#addServiceModal .teeth').forEach(el => {
                 .forEach(x => x.classList.add('selected'));
         }
 
-        document.querySelectorAll('#addServiceForm input[name="tooth_id[]"]').forEach(x => x.remove());
+        document.querySelectorAll(
+            '#addServiceForm input[name="location_id[]"]'
+        ).forEach(x => x.remove());
 
         const form = document.getElementById('addServiceForm');
+
         selectedTeeth.forEach(id => {
             const input = document.createElement('input');
+
             input.type = 'hidden';
-            input.name = 'tooth_id[]';
+            input.name = 'location_id[]';
             input.value = id;
+
             form.appendChild(input);
         });
     });
 });
 
-function openToothServicesModal(toothNo) {
+function openLocationServicesModal(locationId) {
 
-    $('#toothServicesModal').modal('show');
-    $('#toothServicesModalBody').html('Yüklənir...');
+    $('#locationServicesModal').modal('show');
+    $('#locationServicesModalBody').html('Yüklənir...');
 
     let patientId = $('#patient_id').val();
 
-    $.get('/crm/tooth-services/' + patientId, {
-        tooth_id: toothNo
+    $.get('/crm/location-services/' + patientId, {
+        location_id: locationId
     }, function(html){
-        $('#toothServicesModalBody').html(html);
+        $('#locationServicesModalBody').html(html);
     });
 }
 
-const modalEl = document.getElementById('addServiceModal')
+const modalEl = document.getElementById('addServiceModal');
 
 if (modalEl) {
     modalEl.addEventListener('shown.bs.modal', async () => {
+
         document.querySelectorAll('#addServiceModal .teeth.worked')
-            .forEach(el => el.classList.remove('worked'))
+            .forEach(el => el.classList.remove('worked'));
 
-        const url = modalEl.dataset.workedUrl
-        const res = await fetch(url)
-        const data = await res.json()
+        document.querySelectorAll('#addServiceModal .map-zone.worked')
+            .forEach(el => el.classList.remove('worked'));
 
-        ;(data.worked || []).forEach(n => {
-            document.querySelectorAll(`#addServiceModal .tooth-${n}`)
-                .forEach(el => el.classList.add('worked'))
-        })
-    })
+        const url = modalEl.dataset.workedUrl;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        (data.worked || []).forEach(location => {
+
+            // DİŞ XƏRİTƏSİ
+            if (location.type === 'tooth_map') {
+                document.querySelectorAll(
+                    `#addServiceModal .tooth-${location.code}`
+                ).forEach(el => {
+                    el.classList.add('worked');
+                    el.dataset.locationId = location.id;
+                });
+            }
+
+            // BƏDƏN XƏRİTƏSİ
+            if (location.type === 'full_body_map') {
+                document.querySelectorAll(
+                    `#addServiceModal .map-zone[data-location-id="${location.id}"]`
+                ).forEach(el => {
+                    el.classList.add('worked');
+                });
+            }
+
+        });
+    });
+}
+
+let selectedZones = [];
+
+document.querySelectorAll('#addServiceModal .map-zone').forEach(el => {
+    el.addEventListener('click', (e) => {
+
+        const locationId = parseInt(el.dataset.locationId);
+
+        if (!locationId) {
+            console.error('Location ID tapılmadı');
+            return;
+        }
+
+        if (e.shiftKey) {
+            if (el.classList.contains('worked')) {
+                openLocationServicesModal(locationId);
+            }
+            return;
+        }
+
+        if (e.ctrlKey || e.metaKey) {
+
+            if (selectedZones.includes(locationId)) {
+
+                selectedZones = selectedZones.filter(id => id !== locationId);
+
+                document.querySelectorAll(
+                    `#addServiceModal .map-zone[data-location-id="${locationId}"]`
+                ).forEach(x => x.classList.remove('selected'));
+
+            } else {
+
+                selectedZones.push(locationId);
+
+                document.querySelectorAll(
+                    `#addServiceModal .map-zone[data-location-id="${locationId}"]`
+                ).forEach(x => x.classList.add('selected'));
+            }
+
+        } else {
+
+            selectedZones = [locationId];
+
+            document.querySelectorAll('#addServiceModal .map-zone.selected')
+                .forEach(x => x.classList.remove('selected'));
+
+            document.querySelectorAll(
+                `#addServiceModal .map-zone[data-location-id="${locationId}"]`
+            ).forEach(x => x.classList.add('selected'));
+        }
+
+        document.querySelectorAll(
+            '#addServiceForm input[name="location_id[]"]'
+        ).forEach(x => x.remove());
+
+        const form = document.getElementById('addServiceForm');
+
+        selectedZones.forEach(id => {
+            const input = document.createElement('input');
+
+            input.type = 'hidden';
+            input.name = 'location_id[]';
+            input.value = id;
+
+            form.appendChild(input);
+        });
+    });
+});
+
+function openLocationServicesModal(locationId) {
+
+    $('#locationServicesModal').modal('show');
+    $('#locationServicesModalBody').html('Yüklənir...');
+
+    const patientId = $('#patient_id').val();
+
+    $.get('/crm/location-services/' + patientId, {
+        location_id: locationId
+    }, function (html) {
+        $('#locationServicesModalBody').html(html);
+    });
 }
 
 $(document).on('input', '.price, .percent, .price_net', function () {

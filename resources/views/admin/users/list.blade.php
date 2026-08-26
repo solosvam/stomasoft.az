@@ -94,6 +94,7 @@
                                     <th>{{ __('fullname') }}</th>
                                     <th>{{ __('login') }}</th>
                                     <th>{{ __('menu_roles') }}</th>
+                                    <th>İxtisas</th>
                                     <th>{{ __('mobile') }}</th>
                                     <th>{{ __('active') }}</th>
                                     <th>Abunəlik bitir</th>
@@ -110,6 +111,7 @@
                                         <td>{{$admin->fullname}}</td>
                                         <td class="text-alternate">{{$admin->login}}</td>
                                         <td class="text-alternate">{{$admin->getRoleNames()->first()}}</td>
+                                        <td class="text-alternate">{{$admin->specialty->label}}</td>
                                         <td class="text-alternate">{{$admin->mobile}}</td>
                                         <td class="text-alternate">{{ $admin->is_active ? __('active_status') : __('inactive_status') }}</td>
                                         <td class="text-alternate">{{$admin->subscription_ends_at}}</td>
@@ -172,6 +174,13 @@
                             <select class="form-select" name="is_doctor" required>
                                 <option value="1">{{ __('yes') }}</option>
                                 <option value="0">{{ __('no_text') }}</option>
+                            </select>
+                            <label>İxtisas</label>
+                            <select class="form-select" name="specialty_id">
+                                <option value="">{{ __('select') }}</option>
+                                @foreach($specialties as $specialty)
+                                    <option value="{{ $specialty->id }}">{{ $specialty->label }}</option>
+                                @endforeach
                             </select>
                             <label>Baş həkim</label>
                             <select class="form-select" name="parent_id" required>

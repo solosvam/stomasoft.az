@@ -137,17 +137,29 @@ class PatientController extends Controller
         return redirect()->route('admin.crm.info',$id)->with('success','Düzəliş edildi');
     }
 
-    public function workedTeeth(Patient $patient)
+    public function workedLocations(Patient $patient)
     {
         $worked = PatientServiceSessionItems::query()
-            ->whereHas('session', fn($q) => $q->where('patient_id', $patient->id))
-            ->distinct()
-            ->orderBy('tooth_id')
-            ->pluck('tooth_id')
-            ->values();
+            ->with('location:id,type,code')
+            ->whereHas('session', function ($q) use ($patient) {
+                $q->where('patient_id', $patient->id)
+                    ->where('user_id', auth()->id());
+            })
+            ->get()
+            ->pluck('location')
+            ->filter()
+            ->unique('id')
+            ->values()
+            ->map(function ($location) {
+                return [
+                    'id'   => $location->id,
+                    'type' => $location->type,
+                    'code' => $location->code,
+                ];
+            });
 
         return response()->json([
-            'worked' => $worked
+            'worked' => $worked,
         ]);
     }
 

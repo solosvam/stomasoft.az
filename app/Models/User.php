@@ -28,7 +28,8 @@ class User extends Authenticatable
         "clinic_name",
         "clinic_address",
         "work_hours",
-        "parent_id"
+        "parent_id",
+        "specialty_id"
     ];
     protected $appends = ['fullname'];
 
@@ -50,6 +51,16 @@ class User extends Authenticatable
     public function partners(): HasMany
     {
         return $this->hasMany(Partner::class, 'user_id');
+    }
+
+    public function specialty(): BelongsTo
+    {
+        return $this->belongsTo(Specialty::class, 'specialty_id');
+    }
+
+    public function locationMap(): string
+    {
+        return $this->specialty?->location_type ?? 'tooth_map';
     }
 
 }

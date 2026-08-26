@@ -198,7 +198,7 @@
             @endphp
             <tr>
                 <td>{{ $row++ }}</td>
-                <td>{{ $item->tooth_id }}</td>
+                <td>{{ $item->location_id }}</td>
                 <td>{{ $item->service->name ?? '-' }}</td>
                 <td class="text-right">{{ number_format($price, 2) }}</td>
                 <td class="text-right">

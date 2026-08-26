@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\UserCreateRequest;
 use App\Models\SubscriptionPayment;
+use App\Models\Specialty;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -32,10 +33,12 @@ class UsersController extends Controller
             ->get();
 
         $roles = Role::all();
+        $specialties = Specialty::where('active', 1)->get();
 
         return view('admin.users.list', [
             'users' => $users,
             'roles' => $roles,
+            'specialties' => $specialties,
         ]);
     }
 
@@ -60,11 +63,13 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         $users = User::all();
         $roles = Role::all();
+        $specialties = Specialty::where('active', 1)->get();
 
         return view('admin.users.edit', [
             'user' => $user,
             'users' => $users,
             'roles' => $roles,
+            'specialties' => $specialties,
         ]);
     }
 
@@ -77,6 +82,7 @@ class UsersController extends Controller
             'mobile'     => 'required|regex:/^[0-9]{12}$/|unique:user,mobile,'.$request->id,
             'password'   => 'nullable|min:6',
             'role_name'  => 'required|exists:roles,name',
+            'specialty_id' => 'nullable|exists:specialties,id',
         ],[
             'name.required'       => 'Ad yaz',
             'name.min'            => 'Ad minimum 2 hərf olmalıdır',
@@ -107,6 +113,7 @@ class UsersController extends Controller
         $user->is_active = $request->is_active;
         $user->is_doctor = $request->is_doctor;
         $user->parent_id = $request->parent_id;
+        $user->specialty_id = $request->specialty_id;
         if($request->password){
             $user->password = Hash::make($request->password);
         }

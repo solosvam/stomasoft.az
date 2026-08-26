@@ -17,6 +17,7 @@ use App\Models\PatientServiceSession;
 use App\Models\PatientServiceSessionItems;
 use App\Models\Prescription;
 use App\Models\PrescriptionItems;
+use App\Models\ServiceLocation;
 use App\Services\Crm\AddPatientServiceService;
 use App\Services\Crm\EditPatientSessionService;
 use App\Services\Crm\PatientInfoService;
@@ -36,6 +37,11 @@ class CrmController extends Controller
     public function info($id, PatientInfoService $patientInfoService)
     {
         $data = $patientInfoService->getData((int) $id, auth()->id());
+        $locationMap = auth()->user()->locationMap();
+
+        $data['locations'] = ServiceLocation::where('type', $locationMap)
+            ->get()
+            ->keyBy('code');
 
         return view('admin.crm.patient', $data);
     }
@@ -161,7 +167,7 @@ class CrmController extends Controller
     public function editSession($id, EditPatientSessionService $editPatientSessionService): View|RedirectResponse
     {
         try {
-            $data = $editPatientSessionService->getData((int) $id, auth()->id());
+            $data = $editPatientSessionService->getData((int) $id, auth()->id(),auth()->user()->locationMap());
 
             return view('admin.crm.session_edit', $data);
         } catch (\Exception $e) {
@@ -270,23 +276,27 @@ class CrmController extends Controller
         return redirect()->back()->with('success', 'Resept əlavə edildi');
     }
 
-    public function toothServices($id, Request $request)
+    public function locationServices($id, Request $request)
     {
-        $toothId = (int) $request->tooth_id;
+        $locationId = (int) $request->location_id;
 
         $sessions = PatientServiceSession::with([
-            'items' => function ($q) use ($toothId) {
-                $q->where('tooth_id', $toothId)->with('service');
+            'items' => function ($q) use ($locationId) {
+                $q->where('location_id', $locationId)
+                    ->with(['service', 'location']);
             }
         ])
             ->where('patient_id', $id)
             ->where('user_id', auth()->id())
-            ->whereHas('items', function ($q) use ($toothId) {
-                $q->where('tooth_id', $toothId);
+            ->whereHas('items', function ($q) use ($locationId) {
+                $q->where('location_id', $locationId);
             })
             ->orderByDesc('id')
             ->get();
 
-        return view('admin.crm.partial.tooth_services', compact('sessions', 'toothId'));
+        return view(
+            'admin.crm.partial.location_services',
+            compact('sessions', 'locationId')
+        );
     }
 }

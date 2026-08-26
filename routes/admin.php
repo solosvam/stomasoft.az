@@ -136,7 +136,7 @@ Route::name('admin.')->group(function() {
             Route::get('delete/{id}','delete')->name('delete');
             Route::post('add','create')->name('add');
             Route::post('update/{id}','update')->name('update');
-            Route::get('{patient}/worked-teeth','workedTeeth')->name('workedTeeth');
+            Route::get('{patient}/worked-locations','workedLocations')->name('workedLocations');
             Route::post('files/upload/{id}','fileUpload')->name('files.upload');
             Route::post('files/delete/{id}','fileDelete')->name('files.delete');
         });
@@ -149,7 +149,7 @@ Route::name('admin.')->group(function() {
         Route::controller(CrmController::class)->middleware(['can:crm'])->prefix('crm')->name('crm.')->group(function () {
             Route::get('/','index')->name('index');
             Route::get('{id}','info')->name('info');
-            Route::get('tooth-services/{id}','toothServices')->name('toothservices');
+            Route::get('location-services/{id}','locationServices')->name('locationservices');
             Route::get('session/finish/{id}','finishSession')->name('finishSession');
             Route::post('addservice/{id}','addService')->name('addservice');
             Route::post('addprescription/{id}','addPrescription')->name('addprescription');

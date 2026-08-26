@@ -91,6 +91,7 @@
     "select_service":"Select Service",
     "price":"Price",
     "ctrl_select_teeth":"Hold CTRL to select multiple teeth",
+    "ctrl_select_zones":"Hold CTRL to select multiple zones",
 
     "balance_history":"Balance History",
     "profit_report":"Profit Report",

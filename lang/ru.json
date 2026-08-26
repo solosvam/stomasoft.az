@@ -91,6 +91,7 @@
     "select_service":"Выберите услугу",
     "price":"Цена",
     "ctrl_select_teeth":"Удерживайте CTRL для выбора нескольких зубов",
+    "ctrl_select_zones":"Удерживайте CTRL для выбора нескольких зон",
 
     "balance_history":"История баланса",
     "profit_report":"Отчет по прибыли",

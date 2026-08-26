@@ -10,9 +10,16 @@ use Illuminate\Support\Facades\DB;
 
 class UpdatePatientSessionService
 {
-    public function handle(int $sessionId, int $doctorId, array $data): int
-    {
-        return DB::transaction(function () use ($sessionId, $doctorId, $data) {
+    public function handle(
+        int $sessionId,
+        int $doctorId,
+        array $data
+    ): int {
+        return DB::transaction(function () use (
+            $sessionId,
+            $doctorId,
+            $data
+        ) {
             $session = PatientServiceSession::with('items')
                 ->where('id', $sessionId)
                 ->where('user_id', $doctorId)
@@ -25,7 +32,7 @@ class UpdatePatientSessionService
             $patientId = (int) $session->patient_id;
             $oldTotal  = (float) $session->total_cost;
 
-            $toothIds = collect($data['tooth_id'] ?? [])
+            $locationIds = collect($data['location_id'] ?? [])
                 ->map(fn ($x) => (int) $x)
                 ->filter(fn ($x) => $x > 0)
                 ->unique()
@@ -44,7 +51,10 @@ class UpdatePatientSessionService
                 ]
             );
 
-            PatientServiceSessionItems::where('session_id', $session->id)->delete();
+            PatientServiceSessionItems::where(
+                'session_id',
+                $session->id
+            )->delete();
 
             PatientLedger::where('session_id', $session->id)
                 ->where('patient_id', $patientId)
@@ -57,23 +67,26 @@ class UpdatePatientSessionService
             foreach ($items as $item) {
                 $serviceId = (int) ($item['service_id'] ?? 0);
                 $price     = abs((float) ($item['price'] ?? 0));
-                $percent   = min(100, abs((float) ($item['percent'] ?? 0)));
+                $percent   = min(
+                    100,
+                    abs((float) ($item['percent'] ?? 0))
+                );
                 $priceNet  = abs((float) ($item['price_net'] ?? 0));
                 $note      = $item['note'] ?? null;
 
-                if ($serviceId <= 0 || $price < 0 || $priceNet < 0) {
+                if ($serviceId <= 0) {
                     continue;
                 }
 
-                foreach ($toothIds as $toothId) {
+                foreach ($locationIds as $locationId) {
                     PatientServiceSessionItems::create([
-                        'session_id' => $session->id,
-                        'service_id' => $serviceId,
-                        'tooth_id'   => $toothId,
-                        'note'       => $note,
-                        'price'      => $price,
-                        'percent'    => $percent,
-                        'price_net'  => $priceNet,
+                        'session_id'  => $session->id,
+                        'service_id'  => $serviceId,
+                        'location_id' => $locationId,
+                        'note'        => $note,
+                        'price'       => $price,
+                        'percent'     => $percent,
+                        'price_net'   => $priceNet,
                     ]);
 
                     PatientLedger::create([

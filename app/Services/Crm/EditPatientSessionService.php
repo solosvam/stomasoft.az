@@ -3,15 +3,20 @@
 namespace App\Services\Crm;
 
 use App\Models\PatientServiceSession;
+use App\Models\ServiceLocation;
 use App\Models\Services;
 
 class EditPatientSessionService
 {
-    public function getData(int $sessionId, int $doctorId): array
-    {
+    public function getData(
+        int $sessionId,
+        int $doctorId,
+        string $locationMap
+    ): array {
         $session = PatientServiceSession::with([
             'patient',
             'items.service',
+            'items.location',
         ])
             ->where('id', $sessionId)
             ->where('user_id', $doctorId)
@@ -25,9 +30,10 @@ class EditPatientSessionService
             throw new \Exception('Bitmiş xidməti edit etmək olmaz');
         }
 
-        $sessionToothIds = $session->items
-            ->pluck('tooth_id')
+        $sessionLocationIds = $session->items
+            ->pluck('location_id')
             ->filter()
+            ->map(fn ($id) => (int) $id)
             ->unique()
             ->values()
             ->all();
@@ -55,12 +61,18 @@ class EditPatientSessionService
             })
             ->values();
 
+        $locations = ServiceLocation::where('type', $locationMap)
+            ->orderBy('id')
+            ->get()
+            ->keyBy('code');
+
         return [
-            'session'         => $session,
-            'patient'         => $session->patient,
-            'services'        => Services::orderBy('name')->get(),
-            'sessionToothIds' => $sessionToothIds,
-            'groupedItems'    => $groupedItems,
+            'session'            => $session,
+            'patient'            => $session->patient,
+            'services'           => Services::orderBy('name')->get(),
+            'locations'          => $locations,
+            'sessionLocationIds' => $sessionLocationIds,
+            'groupedItems'       => $groupedItems,
         ];
     }
 }
