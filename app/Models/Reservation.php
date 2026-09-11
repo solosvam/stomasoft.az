@@ -10,7 +10,7 @@ class Reservation extends Model
     public $timestamps = false;
     protected $hidden = [];
     protected $fillable = [
-        'doctor_id',
+        'user_id',
         'patient_id',
         'service_id',
         'date',

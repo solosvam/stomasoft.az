@@ -3,11 +3,11 @@
 namespace App\Services\Crm;
 
 use App\Models\CashierLedger;
-use App\Models\DoctorCashBalance;
+use App\Models\UserCashBalance;
 use App\Models\Patient;
 use App\Models\PatientDepositLedger;
-use App\Models\PatientDoctorBalance;
-use App\Models\PatientDoctorDeposit;
+use App\Models\PatientUserBalance;
+use App\Models\PatientUserDeposit;
 use App\Models\PatientLedger;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +20,7 @@ class PatientPaymentService
                 ->where('user_id', $cashierId)
                 ->firstOrFail();
 
-            $doctorId = (int) ($data['doctor_id'] ?? 0);
+            $doctorId = (int) ($data['user_id'] ?? 0);
             $amount   = round((float) $data['amount'], 2);
             $method   = $data['method'];
             $note     = $data['note'] ?? null;
@@ -29,8 +29,8 @@ class PatientPaymentService
                 throw new \Exception('həkim seçilməlidir');
             }
 
-            $patientDoctorBalance = PatientDoctorBalance::where('patient_id', $patient->id)
-                ->where('doctor_id', $doctorId)
+            $patientDoctorBalance = PatientUserBalance::where('patient_id', $patient->id)
+                ->where('user_id', $doctorId)
                 ->lockForUpdate()
                 ->first();
 
@@ -45,8 +45,8 @@ class PatientPaymentService
             }
 
             if ($method === 'deposit') {
-                $deposit = PatientDoctorDeposit::where('patient_id', $patient->id)
-                    ->where('doctor_id', $doctorId)
+                $deposit = PatientUserDeposit::where('patient_id', $patient->id)
+                    ->where('user_id', $doctorId)
                     ->lockForUpdate()
                     ->first();
 
@@ -78,7 +78,7 @@ class PatientPaymentService
 
             $this->createPatientLedger($patient->id, $doctorId, $cashierId, $amount, $method, $note);
             $this->createCashierLedger($patient->id, $doctorId, $cashierId, $amount, $method, $note);
-            $this->incrementDoctorCash($doctorId, $amount);
+            $this->incrementUserCash($doctorId, $amount);
         });
     }
 
@@ -92,7 +92,7 @@ class PatientPaymentService
     ): void {
         PatientLedger::create([
             'patient_id' => $patientId,
-            'doctor_id'  => $doctorId,
+            'user_id'  => $doctorId,
             'session_id' => null,
             'type'       => 'payment',
             'amount'     => $amount,
@@ -113,7 +113,7 @@ class PatientPaymentService
     ): void {
         CashierLedger::create([
             'cashier_id' => $cashierId,
-            'doctor_id'  => $doctorId,
+            'user_id'  => $doctorId,
             'patient_id' => $patientId,
             'partner_id' => null,
             'type'       => 'patient_payment',
@@ -133,7 +133,7 @@ class PatientPaymentService
     ): void {
         PatientDepositLedger::create([
             'patient_id' => $patientId,
-            'doctor_id'  => $doctorId,
+            'user_id'  => $doctorId,
             'cashier_id' => $cashierId,
             'type'       => 'payment',
             'amount'     => $amount,
@@ -142,13 +142,13 @@ class PatientPaymentService
         ]);
     }
 
-    private function incrementDoctorCash(int $doctorId, float $amount): void
+    private function incrementUserCash(int $doctorId, float $amount): void
     {
-        $doctorCashBalance = DoctorCashBalance::firstOrCreate(
-            ['doctor_id' => $doctorId],
+        $userCashBalance = UserCashBalance::firstOrCreate(
+            ['user_id' => $doctorId],
             ['balance' => 0]
         );
 
-        $doctorCashBalance->increment('balance', $amount);
+        $userCashBalance->increment('balance', $amount);
     }
 }

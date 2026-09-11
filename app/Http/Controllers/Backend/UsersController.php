@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\UserCreateRequest;
+use App\Models\DoctorProfile;
 use App\Models\SubscriptionPayment;
 use App\Models\Specialty;
 use App\Models\User;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use App\Models\CashierLedger;
-use App\Models\DoctorCashBalance;
+use App\Models\UserCashBalance;
 use Illuminate\Support\Facades\DB;
 
 class UsersController extends Controller
@@ -20,19 +21,23 @@ class UsersController extends Controller
     {
         $authUser = auth()->user();
 
-        $users = User::withCount([
-            'services' => function ($query) {
-                $query->withoutGlobalScope('doctor');
-            },
-            'patients',
-            'partners',
+        $users = User::with([
+            'doctorProfile.specialty',
         ])
+            ->withCount([
+                'services' => function ($query) {
+                    $query->withoutGlobalScope('user');
+                },
+                'patients',
+                'partners',
+            ])
             ->when($authUser->id !== 1, function ($query) use ($authUser) {
                 $query->where('parent_id', $authUser->id);
             })
             ->get();
 
         $roles = Role::all();
+
         $specialties = Specialty::where('active', 1)->get();
 
         return view('admin.users.list', [
@@ -45,11 +50,29 @@ class UsersController extends Controller
     public function create(UserCreateRequest $request)
     {
         $validatedData = $request->validated();
-        $validatedData['password'] = Hash::make($request->password);
 
-        $user = User::create($validatedData);
-        $user->syncRoles([$request->role_name]);
-        return redirect()->back()->with('success', 'Əməkdaş uğurla yaradıldı!');
+        $userData = [
+            'name'         => $validatedData['name'],
+            'surname'      => $validatedData['surname'],
+            'mobile'       => $validatedData['mobile'],
+            'login'        => $validatedData['login'],
+            'password'     => Hash::make($validatedData['password']),
+            'account_type' => $validatedData['account_type'],
+            'parent_id'    => $validatedData['parent_id'] ?? null,
+        ];
+
+        $user = User::create($userData);
+
+        $user->syncRoles([$validatedData['role_name']]);
+
+        if ($user->account_type === 'doctor') {
+            DoctorProfile::create([
+                'user_id'      => $user->id,
+                'specialty_id' => $validatedData['specialty_id'] ?? null,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'istifadəçi uğurla yaradıldı!');
     }
 
     public function edit($id)
@@ -76,32 +99,37 @@ class UsersController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'name'       => 'required|string|min:2|max:50',
-            'surname'    => 'required|string|min:2|max:50',
-            'login'      => 'required|string|min:3|max:50|unique:user,login,'.$request->id,
-            'mobile'     => 'required|regex:/^[0-9]{12}$/|unique:user,mobile,'.$request->id,
-            'password'   => 'nullable|min:6',
-            'role_name'  => 'required|exists:roles,name',
-            'specialty_id' => 'nullable|exists:specialties,id',
+            'name'         => 'required|string|min:2|max:50',
+            'surname'      => 'required|string|min:2|max:50',
+            'login'        => 'required|string|min:3|max:50|unique:user,login,'.$request->id,
+            'mobile'       => 'required|regex:/^[0-9]{12}$/|unique:user,mobile,'.$request->id,
+            'password'     => 'nullable|min:6',
+            'account_type' => 'required|in:doctor,technician',
+            'role_name'    => 'required|exists:roles,name',
+            'parent_id'    => 'nullable|exists:user,id',
+            'specialty_id' => 'required_if:account_type,doctor|nullable|exists:specialties,id',
         ],[
-            'name.required'       => 'Ad yaz',
-            'name.min'            => 'Ad minimum 2 hərf olmalıdır',
-            'surname.required'    => 'Soyad yaz',
-            'surname.min'         => 'Soyad minimum 2 hərf olmalıdır',
-            'login.required'      => 'Login boş ola bilməz',
-            'login.unique'        => 'Bu login artıq istifadə olunur',
-            'mobile.required'     => 'Mobil nömrə yaz',
-            'mobile.regex'        => 'Mobil nömrə 994 ilə başlamalı və 12 rəqəm olmalıdır',
-            'mobile.unique'       => 'Bu nömrə artıq mövcuddur',
-            'password.min'        => 'Şifrə minimum 6 simvol olmalıdır',
-            'role_name.required'  => 'Rol seç',
-            'role_name.exists'    => 'Rol tapılmadı',
+            'name.required'            => 'Ad yaz',
+            'name.min'                 => 'Ad minimum 2 hərf olmalıdır',
+            'surname.required'         => 'Soyad yaz',
+            'surname.min'              => 'Soyad minimum 2 hərf olmalıdır',
+            'login.required'           => 'Login boş ola bilməz',
+            'login.unique'             => 'Bu login artıq istifadə olunur',
+            'mobile.required'          => 'Mobil nömrə yaz',
+            'mobile.regex'             => 'Mobil nömrə 994 ilə başlamalı və 12 rəqəm olmalıdır',
+            'mobile.unique'            => 'Bu nömrə artıq mövcuddur',
+            'password.min'             => 'Şifrə minimum 6 simvol olmalıdır',
+            'account_type.required'    => 'Hesab tipi seçilməlidir',
+            'account_type.in'          => 'Hesab tipi düzgün seçilməyib',
+            'role_name.required'       => 'Rol seç',
+            'role_name.exists'         => 'Rol tapılmadı',
+            'specialty_id.required_if' => 'Həkim üçün ixtisas seçilməlidir',
         ]);
 
         $authUser = auth()->user();
 
         if ($authUser->id != 1) {
-            abort( 403);
+            abort(403);
         }
 
         $user = User::findOrFail($request->id);
@@ -111,17 +139,32 @@ class UsersController extends Controller
         $user->login = $request->login;
         $user->mobile = $request->mobile;
         $user->is_active = $request->is_active;
-        $user->is_doctor = $request->is_doctor;
-        $user->parent_id = $request->parent_id;
-        $user->specialty_id = $request->specialty_id;
-        if($request->password){
+        $user->account_type = $request->account_type;
+        $user->parent_id = $request->account_type === 'doctor'
+            ? $request->parent_id
+            : null;
+
+        if ($request->password) {
             $user->password = Hash::make($request->password);
         }
+
         $user->save();
+
+        if ($user->account_type === 'doctor') {
+            DoctorProfile::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                ],
+                [
+                    'specialty_id' => $request->specialty_id,
+                ]
+            );
+        }
 
         $user->syncRoles([$request->role_name]);
 
-        return redirect(route('admin.list'))->with('success', 'Əməkdaş məlumatları yeniləndi!');
+        return redirect(route('admin.list'))
+            ->with('success', 'İstifadəçi məlumatları yeniləndi!');
     }
 
     public function subscription($id)
@@ -162,12 +205,12 @@ class UsersController extends Controller
                 'status' => 1,
             ]);
 
-            $cashBalance = DoctorCashBalance::where('doctor_id', auth()->id())
+            $cashBalance = UserCashBalance::where('doctor_id', auth()->id())
                 ->lockForUpdate()
                 ->first();
 
             if (!$cashBalance) {
-                $cashBalance = DoctorCashBalance::create([
+                $cashBalance = UserCashBalance::create([
                     'doctor_id' => auth()->id(),
                     'balance' => 0,
                 ]);

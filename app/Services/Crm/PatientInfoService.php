@@ -3,11 +3,11 @@
 namespace App\Services\Crm;
 
 use App\Models\Partner;
-use App\Models\PartnerDoctorPatientBalance;
+use App\Models\PartnerUserPatientBalance;
 use App\Models\PartnerLedger;
 use App\Models\Patient;
 use App\Models\PatientDepositLedger;
-use App\Models\PatientDoctorBalance;
+use App\Models\PatientUserBalance;
 use App\Models\PatientLedger;
 use App\Models\Reservation;
 use App\Models\Services;
@@ -25,7 +25,7 @@ class PatientInfoService
             $this->getFinancialData($patient, $userId),
             $this->getLedgerData($patient),
             $this->getDepositData($patient),
-            $this->getDoctorTotals($patient),
+            $this->getUserTotals($patient),
             $this->getPartnerPatientBalances($patient, $userId),
             ['slots' => $this->generateSlots()]
         );
@@ -37,7 +37,7 @@ class PatientInfoService
             'sessions' => function ($query) {
                 $query->orderByDesc('id');
             },
-            'sessions.doctor',
+            'sessions.user',
             'sessions.items.service',
             'sessions.items.location',
         ])
@@ -58,12 +58,12 @@ class PatientInfoService
     private function getFinancialData(Patient $patient, int $userId): array
     {
         $patientServiceTotal = (float) PatientLedger::where('patient_id', $patient->id)
-            ->where('doctor_id', $userId)
+            ->where('user_id', $userId)
             ->where('type', 'service')
             ->sum('amount');
 
         $partnerPurchaseTotal = (float) PartnerLedger::where('patient_id', $patient->id)
-            ->where('doctor_id', $userId)
+            ->where('user_id', $userId)
             ->where('type', 'purchase')
             ->sum('amount');
 
@@ -75,7 +75,7 @@ class PatientInfoService
 
     private function getLedgerData(Patient $patient): array
     {
-        $rows = PatientLedger::with('doctor')
+        $rows = PatientLedger::with('user')
             ->where('patient_id', $patient->id)
             ->orderByDesc('created_at')
             ->orderByDesc('id')
@@ -95,7 +95,7 @@ class PatientInfoService
 
     private function getDepositData(Patient $patient): array
     {
-        $depositRows = PatientDepositLedger::with('doctor')
+        $depositRows = PatientDepositLedger::with('user')
             ->where('patient_id', $patient->id)
             ->orderByDesc('created_at')
             ->orderByDesc('id')
@@ -113,10 +113,10 @@ class PatientInfoService
         ];
     }
 
-    private function getDoctorTotals(Patient $patient): array
+    private function getUserTotals(Patient $patient): array
     {
         return [
-            'doctorTotals' => PatientDoctorBalance::with('doctor')
+            'userTotals' => PatientUserBalance::with('user')
                 ->where('patient_id', $patient->id)
                 ->where('balance', '>', 0)
                 ->orderByDesc('balance')
@@ -127,9 +127,9 @@ class PatientInfoService
     private function getPartnerPatientBalances(Patient $patient, int $userId): array
     {
         return [
-            'partnerPatientBalances' => PartnerDoctorPatientBalance::with('partner')
+            'partnerPatientBalances' => PartnerUserPatientBalance::with('partner')
                 ->where('patient_id', $patient->id)
-                ->where('doctor_id', $userId)
+                ->where('user_id', $userId)
                 ->where('balance', '>', 0)
                 ->orderByDesc('balance')
                 ->get(),

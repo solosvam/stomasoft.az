@@ -2,7 +2,7 @@
 
 namespace App\Services\Crm;
 
-use App\Models\PatientDoctorBalance;
+use App\Models\PatientUserBalance;
 use App\Models\PatientLedger;
 use App\Models\PatientServiceSession;
 use App\Models\PatientServiceSessionItems;
@@ -41,10 +41,10 @@ class UpdatePatientSessionService
 
             $items = $data['items'] ?? [];
 
-            $balance = PatientDoctorBalance::firstOrCreate(
+            $balance = PatientUserBalance::firstOrCreate(
                 [
                     'patient_id' => $patientId,
-                    'doctor_id'  => $doctorId,
+                    'user_id'  => $doctorId,
                 ],
                 [
                     'balance' => 0,
@@ -58,7 +58,7 @@ class UpdatePatientSessionService
 
             PatientLedger::where('session_id', $session->id)
                 ->where('patient_id', $patientId)
-                ->where('doctor_id', $doctorId)
+                ->where('user_id', $doctorId)
                 ->where('type', 'service')
                 ->delete();
 
@@ -91,7 +91,7 @@ class UpdatePatientSessionService
 
                     PatientLedger::create([
                         'patient_id' => $patientId,
-                        'doctor_id'  => $doctorId,
+                        'user_id'  => $doctorId,
                         'session_id' => $session->id,
                         'type'       => 'service',
                         'amount'     => $priceNet,

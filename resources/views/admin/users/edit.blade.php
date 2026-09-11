@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = __('user_edit');
-    $breadcrumbs = ["/admin"=>"White Dent", ""=>$title]
+    $breadcrumbs = ["/admin"=>"StomaSoft", ""=>$title]
 @endphp
 @extends('admin.layout',['html_tag_data'=>$html_tag_data, 'title'=>$title])
 
@@ -33,24 +33,28 @@
                         <div class="card-body">
                             <form action="{{route('admin.update',$user->id)}}" method="post">
                                 @csrf
+
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('name') }}</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
                                         <input type="text" class="form-control" name="name" value="{{$user->name}}" />
                                     </div>
                                 </div>
+
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('surname') }}</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
                                         <input type="text" class="form-control" name="surname" value="{{$user->surname}}" />
                                     </div>
                                 </div>
+
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('login') }}</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
                                         <input type="text" class="form-control" name="login" value="{{$user->login}}" />
                                     </div>
                                 </div>
+
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('mobile') }}</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
@@ -61,7 +65,7 @@
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('password_optional') }}</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <input type="text" class="form-control" name="password"  />
+                                        <input type="text" class="form-control" name="password" />
                                     </div>
                                 </div>
 
@@ -71,6 +75,16 @@
                                         <select class="form-select" name="is_active">
                                             <option value="1" {{ $user->is_active ? 'selected' : '' }}>{{ __('active_status') }}</option>
                                             <option value="0" {{ !$user->is_active ? 'selected' : '' }}>{{ __('inactive_status') }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Hesab tipi</label>
+                                    <div class="col-sm-8 col-md-9 col-lg-10">
+                                        <select class="form-control" name="account_type" id="accountType" required>
+                                            <option value="doctor" {{ $user->account_type == 'doctor' ? 'selected' : '' }}>Həkim</option>
+                                            <option value="technician" {{ $user->account_type == 'technician' ? 'selected' : '' }}>Texnik</option>
                                         </select>
                                     </div>
                                 </div>
@@ -87,43 +101,38 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 row">
-                                    <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('is_doctor') }}</label>
-                                    <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <select class="form-control" name="is_doctor" required>
-                                            <option value="1" @if($user->is_doctor) selected @endif>{{ __('yes') }}</option>
-                                            <option value="0" @if(!$user->is_doctor) selected @endif>{{ __('no_text') }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row">
-                                    <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">İxtisas</label>
-                                    <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <select class="form-control" name="specialty_id">
-                                            <option value="">{{ __('select') }}</option>
-                                            @foreach($specialties as $specialty)
-                                                <option value="{{ $specialty->id }}" @if($user->specialty_id == $specialty->id) selected @endif>{{ $specialty->label }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row">
-                                    <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Baş həkim</label>
-                                    <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <select class="form-control" name="parent_id">
-                                            <option value="">Baş həkimi seçin</option>
-
-                                            @foreach($users as $doctor)
-                                                @if($doctor->id != $user->id)
-                                                    <option value="{{ $doctor->id }}"
-                                                        {{ $user->parent_id == $doctor->id ? 'selected' : '' }}>
-                                                        {{ $doctor->name }} {{ $doctor->surname }}
+                                <div id="doctorFields">
+                                    <div class="mb-3 row">
+                                        <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">İxtisas</label>
+                                        <div class="col-sm-8 col-md-9 col-lg-10">
+                                            <select class="form-control" name="specialty_id">
+                                                <option value="">{{ __('select') }}</option>
+                                                @foreach($specialties as $specialty)
+                                                    <option value="{{ $specialty->id }}"
+                                                        {{ $user->doctorProfile?->specialty_id == $specialty->id ? 'selected' : '' }}>
+                                                        {{ $specialty->label }}
                                                     </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Baş həkim</label>
+                                        <div class="col-sm-8 col-md-9 col-lg-10">
+                                            <select class="form-control" name="parent_id">
+                                                <option value="">Baş həkimi seçin</option>
+
+                                                @foreach($users as $doctor)
+                                                    @if($doctor->id != $user->id && $doctor->account_type == 'doctor')
+                                                        <option value="{{ $doctor->id }}"
+                                                            {{ $user->parent_id == $doctor->id ? 'selected' : '' }}>
+                                                            {{ $doctor->name }} {{ $doctor->surname }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -139,4 +148,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleDoctorFields() {
+            const accountType = document.getElementById('accountType');
+            const doctorFields = document.getElementById('doctorFields');
+
+            doctorFields.style.display =
+                accountType.value === 'doctor' ? 'block' : 'none';
+        }
+
+        document.getElementById('accountType').addEventListener('change', toggleDoctorFields);
+
+        toggleDoctorFields();
+    </script>
 @endsection

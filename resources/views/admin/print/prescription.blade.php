@@ -125,9 +125,9 @@
 
 <div class="center">
     <div class="title">{{ __('clinic_prescription') }}</div>
-    <div class="clinic">{{ $prescription->doctor->clinic_name ?? '' }}</div>
-    <div class="muted">{{ $prescription->doctor->clinic_address ?? '' }}</div>
-    <div class="muted">{{ $prescription->doctor->mobile ?? '' }}</div>
+    <div class="clinic">{{ $prescription->user->doctorProfile->clinic_name ?? '' }}</div>
+    <div class="muted">{{ $prescription->user->doctorProfile->clinic_address ?? '' }}</div>
+    <div class="muted">{{ $prescription->user->doctorProfile->mobile ?? '' }}</div>
 </div>
 
 <div class="line"></div>
@@ -144,7 +144,7 @@
 
 <div class="row">
     <span class="label">{{ __('doctor') }}:</span>
-    <span>{{ $prescription->doctor->fullname ?? $prescription->doctor->name ?? '-' }}</span>
+    <span>{{ $prescription->user->fullname ?? $prescription->user->name ?? '-' }}</span>
 </div>
 
 <div class="line"></div>

@@ -19,6 +19,10 @@
     "menu_patient_debtors":"Debtors",
     "menu_patient_activeservices":"Active Services",
 
+    "menu_doctors": "Doctors",
+    "menu_doctor_list": "Doctor List",
+    "new_doctor_btn": "Add Doctor",
+
     "menu_partners":"Partners",
     "menu_crm":"CRM",
     "menu_cashier":"Cashier",

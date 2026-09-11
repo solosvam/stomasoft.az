@@ -171,6 +171,39 @@
                 </ul>
             </li>
             @endcan
+
+            @can('doctor.menu')
+                <li>
+                    <a href="#doctormenu" data-href="/doctormenu" class="{{ isActiveRoute('admin/doctor/*') }}">
+                        <i data-acorn-icon="user" class="icon" data-acorn-size="18"></i>
+                        <span class="label">{{__('menu_doctors')}}</span>
+                    </a>
+                    <ul id="doctormenu">
+                        @can('doctor.list')
+                            <li>
+                                <a href="{{route('admin.doctor.list')}}">
+                                    <span class="label">{{__('menu_doctor_list')}}</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('doctor.debtors')
+                            <li>
+                                <a href="{{route('admin.doctor.debtors')}}">
+                                    <span class="label">{{__('menu_patient_debtors')}}</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('doctor.active_jobs')
+                            <li>
+                                <a href="{{route('admin.doctor.activeJobs')}}">
+                                    <span class="label">{{__('menu_patient_activeservices')}}</span>
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endcan
+
             @can('partners.list')
                 <li>
                     <a href="{{route('admin.partners.list')}}" class="{{ isActiveRoute('admin/partners/*') }}">
@@ -182,6 +215,15 @@
             @can('crm')
                 <li>
                     <a href="{{route('admin.crm.index')}}" class="{{ isActiveRoute('admin/crm/*') }}">
+                        <i data-acorn-icon="category" class="icon" data-acorn-size="18"></i>
+                        <span class="label">{{__('menu_crm')}}</span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('tcrm')
+                <li>
+                    <a href="{{route('admin.tcrm.index')}}" class="{{ isActiveRoute('admin/tcrm/*') }}">
                         <i data-acorn-icon="category" class="icon" data-acorn-size="18"></i>
                         <span class="label">{{__('menu_crm')}}</span>
                     </a>

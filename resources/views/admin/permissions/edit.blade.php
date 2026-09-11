@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = 'Səhifə edit';
-    $breadcrumbs = ["/admin"=>"White Dent", ""=>"Səhifə edit"]
+    $breadcrumbs = ["/admin"=>"StomaSoft", ""=>"Səhifə edit"]
 @endphp
 @extends('admin.layout',['html_tag_data'=>$html_tag_data, 'title'=>$title])
 

@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = __('menu_cashier');
-    $breadcrumbs = ["/admin"=> "White Dent", route('admin.cashier.index') => __('menu_cashier')]
+    $breadcrumbs = ["/admin"=> "StomaSoft", route('admin.cashier.index') => __('menu_cashier')]
 @endphp
 @extends('admin.layout',[ 'title'=>$title])
 @section('css')
@@ -85,7 +85,7 @@
                 <!-- Top Buttons Start -->
                 <div class="col-12 col-md-5 d-flex align-items-start justify-content-end">
                     <button type="button" class="btn btn-outline-info btn-icon btn-icon-end w-100 w-sm-auto cashier-net hide-money">
-                        <span>{{ __('cash_net') }} : {{ $doctorCash?->balance ?? 0 }}</span>
+                        <span>{{ __('cash_net') }} : {{ $userCash?->balance ?? 0 }}</span>
                     </button>
                     <button type="button" class="btn btn-outline-primary btn-icon btn-icon-end w-100 w-sm-auto ms-4" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas" aria-controls="filterCanvas">
                         <i data-acorn-icon="filter"></i>

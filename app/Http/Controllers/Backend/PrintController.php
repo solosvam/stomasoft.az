@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
-use App\Models\PatientDoctorBalance;
+use App\Models\PatientUserBalance;
 use App\Models\Prescription;
 
 class PrintController extends Controller
@@ -25,7 +25,7 @@ class PrintController extends Controller
             ])
             ->firstOrFail();
 
-        $totalDebt = PatientDoctorBalance::where('patient_id', $patient->id)
+        $totalDebt = PatientUserBalance::where('patient_id', $patient->id)
             ->sum('balance');
 
         return view('admin.print.service', [
@@ -36,9 +36,9 @@ class PrintController extends Controller
 
     public function printPrescription($id)
     {
-        $prescription = Prescription::with(['patient.doctor', 'doctor', 'items'])
+        $prescription = Prescription::with(['patient.user', 'user', 'items'])
             ->where('id', $id)
-            ->where('doctor_id', auth()->id())
+            ->where('user_id', auth()->id())
             ->firstOrFail();
 
         return view('admin.print.prescription', compact('prescription'));

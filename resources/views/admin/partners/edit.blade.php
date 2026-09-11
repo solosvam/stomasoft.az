@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = __('partner_edit');
-    $breadcrumbs = ["/admin"=>"White Dent", ""=>__('partner_edit')];
+    $breadcrumbs = ["/admin"=>"StomaSoft", ""=>__('partner_edit')];
 @endphp
 @extends('admin.layout',['html_tag_data'=>$html_tag_data, 'title'=>$title])
 
@@ -63,7 +63,7 @@
                                                required>
                                     </div>
                                 </div>
-
+                                @if(auth()->user()->account_type == 'doctor')
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">{{ __('type') }}</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
@@ -73,7 +73,9 @@
                                         </select>
                                     </div>
                                 </div>
-
+                                @else
+                                    <input type="hidden" name="type" value="supplier">
+                                @endif
                                 <div class="mb-3 row mt-5">
                                     <div class="col-sm-8 col-md-9 col-lg-10 ms-auto">
                                         <button type="submit" class="btn btn-primary">{{ __('update') }}</button>

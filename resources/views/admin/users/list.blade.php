@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = __('admin_list');
-    $breadcrumbs = ["/admin"=>"White Dent", ""=>__('menu_users')]
+    $breadcrumbs = ["/admin"=>"StomaSoft", ""=>__('menu_users')]
 @endphp
 @extends('admin.layout',['html_tag_data'=>$html_tag_data, 'title'=>$title])
 
@@ -92,8 +92,9 @@
                                 <tr>
                                     <th>#</th>
                                     <th>{{ __('fullname') }}</th>
+                                    <th>Tip</th>
                                     <th>{{ __('login') }}</th>
-                                    <th>{{ __('menu_roles') }}</th>
+                                    <th>Rol</th>
                                     <th>İxtisas</th>
                                     <th>{{ __('mobile') }}</th>
                                     <th>{{ __('active') }}</th>
@@ -108,26 +109,75 @@
                                 @foreach($users as $key => $admin)
                                     <tr>
                                         <td>{{$key+1}}</td>
+
                                         <td>{{$admin->fullname}}</td>
+
+                                        <td class="text-alternate">
+                                            @if($admin->account_type == 'doctor')
+                                                Həkim
+                                            @elseif($admin->account_type == 'technician')
+                                                Texnik
+                                            @endif
+                                        </td>
+
                                         <td class="text-alternate">{{$admin->login}}</td>
+
                                         <td class="text-alternate">{{$admin->getRoleNames()->first()}}</td>
-                                        <td class="text-alternate">{{$admin->specialty->label}}</td>
+
+                                        <td class="text-alternate">
+                                            @if($admin->account_type == 'doctor')
+                                                {{$admin->doctorProfile?->specialty?->label ?? '-'}}
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+
                                         <td class="text-alternate">{{$admin->mobile}}</td>
-                                        <td class="text-alternate">{{ $admin->is_active ? __('active_status') : __('inactive_status') }}</td>
+
+                                        <td class="text-alternate">
+                                            {{ $admin->is_active ? __('active_status') : __('inactive_status') }}
+                                        </td>
+
                                         <td class="text-alternate">{{$admin->subscription_ends_at}}</td>
-                                        <td class="text-alternate">{{$admin->patients_count}}</td>
-                                        <td class="text-alternate">{{$admin->partners_count}}</td>
-                                        <td class="text-alternate">{{$admin->services_count}}</td>
+
+                                        <td class="text-alternate">
+                                            @if($admin->account_type == 'doctor')
+                                                {{$admin->patients_count}}
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+
+                                        <td class="text-alternate">
+                                            @if($admin->account_type == 'doctor')
+                                                {{$admin->partners_count}}
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+
+                                        <td class="text-alternate">
+                                            @if($admin->account_type == 'doctor')
+                                                {{$admin->services_count}}
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+
                                         <td class="text-alternate">
                                             @if(auth()->id() == 1)
-                                            <a href="{{route('admin.edit',$admin->id)}}" class="btn btn-primary btn-sm">{{ __('edit') }}</a>
-                                            <button class="btn btn-sm btn-warning subscriptionBtn"
-                                                    data-url="{{ route('admin.subscription', $admin->id) }}"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#subscriptionModal">
-                                                Abunəlik
-                                            </button>
+                                                <a href="{{route('admin.edit',$admin->id)}}" class="btn btn-primary btn-sm">
+                                                    {{ __('edit') }}
+                                                </a>
+
+                                                <button class="btn btn-sm btn-warning subscriptionBtn"
+                                                        data-url="{{ route('admin.subscription', $admin->id) }}"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#subscriptionModal">
+                                                    Abunəlik
+                                                </button>
                                             @endif
+
                                             <a href="{{ route('admin.impersonate', $admin->id) }}"
                                                class="btn btn-sm btn-outline-danger">
                                                 👁 Giriş et
@@ -163,6 +213,37 @@
                             <input type="text" name="login" class="form-control" placeholder="{{ __('login') }}" value="{{old('login')}}" required>
                             <label>{{ __('password') }}</label>
                             <input type="text" name="password" class="form-control" placeholder="{{ __('password') }}" required>
+
+                            <label>Hesab tipi</label>
+                            <select class="form-select" name="account_type" id="accountType" required>
+                                <option value="">{{ __('select') }}</option>
+                                <option value="doctor" {{ old('account_type') == 'doctor' ? 'selected' : '' }}>Həkim</option>
+                                <option value="technician" {{ old('account_type') == 'technician' ? 'selected' : '' }}>Texnik</option>
+                            </select>
+                            <div id="doctorFields" style="display:none;">
+                                <label>İxtisas</label>
+                                <select class="form-select" name="specialty_id">
+                                    <option value="">{{ __('select') }}</option>
+                                    @foreach($specialties as $specialty)
+                                        <option value="{{ $specialty->id }}" {{ old('specialty_id') == $specialty->id ? 'selected' : '' }}>
+                                            {{ $specialty->label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <label>Baş həkim</label>
+                                <select class="form-select" name="parent_id">
+                                    <option value="">{{ __('select') }}</option>
+                                    @foreach($users as $user)
+                                        @if($user->account_type == 'doctor')
+                                            <option value="{{$user->id}}" {{ old('parent_id') == $user->id ? 'selected' : '' }}>
+                                                {{ $user->fullname }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <label>{{ __('menu_roles') }}</label>
                             <select class="form-select" name="role_name" required>
                                 <option value="">{{ __('select') }}</option>
@@ -170,25 +251,7 @@
                                     <option value="{{$role->name}}">{{ $role->name }}</option>
                                 @endforeach
                             </select>
-                            <label>{{ __('is_doctor') }}</label>
-                            <select class="form-select" name="is_doctor" required>
-                                <option value="1">{{ __('yes') }}</option>
-                                <option value="0">{{ __('no_text') }}</option>
-                            </select>
-                            <label>İxtisas</label>
-                            <select class="form-select" name="specialty_id">
-                                <option value="">{{ __('select') }}</option>
-                                @foreach($specialties as $specialty)
-                                    <option value="{{ $specialty->id }}">{{ $specialty->label }}</option>
-                                @endforeach
-                            </select>
-                            <label>Baş həkim</label>
-                            <select class="form-select" name="parent_id" required>
-                                <option value="">{{ __('select') }}</option>
-                                @foreach($users as $user)
-                                    <option value="{{$user->id}}">{{ $user->fullname }}</option>
-                                @endforeach
-                            </select>
+
                             <hr>
                             <button type="submit" class="btn btn-primary">{{ __('add') }}</button>
                         </form>
@@ -196,6 +259,19 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            function toggleDoctorFields() {
+                const accountType = document.getElementById('accountType');
+                const doctorFields = document.getElementById('doctorFields');
+
+                doctorFields.style.display = accountType.value === 'doctor' ? 'block' : 'none';
+            }
+
+            document.getElementById('accountType').addEventListener('change', toggleDoctorFields);
+
+            toggleDoctorFields();
+        </script>
 
         <div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-xl">

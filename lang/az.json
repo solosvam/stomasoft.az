@@ -5,7 +5,7 @@
     "subject" : "Mövzu",
 
     "menu_admin" : "Admin",
-    "menu_users" : "Əməkdaşlar",
+    "menu_users" : "İstifadəçilər",
     "menu_roles" : "Rollar",
     "menu_permission_list" : "İcazə səhifələri",
     "menu_services" : "Xidmətlər",
@@ -18,6 +18,12 @@
     "menu_patient_list" : "Pasient siyahısı",
     "menu_patient_debtors" : "Borcu olanlar",
     "menu_patient_activeservices" : "Xidmət davam edənlər",
+
+    "menu_doctors" : "Həkimlər",
+    "menu_doctor_list" : "Həkim siyahısı",
+    "new_doctor_btn" : "Yeni həkim",
+    "doctor_edit" : "Həkim edit",
+    "search_doctor" : "Həkim axtarışı",
 
     "menu_partners" : "Partnyorlar",
     "menu_crm" : "CRM",
@@ -159,7 +165,7 @@
     "search_notes":"Axtarış",
 
     "partner_balance":"Partnyor balans",
-    "partner_doctor_balance_details":"Partnyor-Həkim balans detalları",
+    "partner_doctor_balance_details":"Partnyorun balans detalları",
     "general_purchase":"Ümumi alış",
     "pay":"Ödə",
     "debt_details":"Borc detalları",
@@ -259,14 +265,14 @@
     "piece":"Ədəd",
     "stock_edit":"Stok edit",
 
-    "admin_list":"Əməkdaş siyahısı",
-    "new_employee":"Yeni Əməkdaş",
+    "admin_list":"İstifadəçi siyahısı",
+    "new_employee":"Yeni İstifadəçi",
     "login":"Login",
     "password":"Parol",
     "is_doctor":"Həkimdir",
     "yes":"Bəli",
     "no_text":"Xeyr",
-    "user_edit":"Əməkdaş edit",
+    "user_edit":"İstifadəçi edit",
     "password_optional":"Şifrə (boş buraxıldıqda dəyişdirilmir)",
 
     "profile_edit":"Profil məlumatlarında düzəliş",

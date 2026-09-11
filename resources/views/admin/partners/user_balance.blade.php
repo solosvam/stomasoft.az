@@ -1,7 +1,7 @@
 @php
     $title = __('partner_balance');
     $html_tag_data = [];
-    $breadcrumbs = ["/admin"=>"White Dent", "admin/partners/list"=>__('menu_partners'),"#"=>__('partner_doctor_balance_details')];
+    $breadcrumbs = ["/admin"=>"StomaSoft", "admin/partners/list"=>__('menu_partners'),"#"=>__('partner_doctor_balance_details')];
 @endphp
 @extends('admin.layout',['html_tag_data'=> $html_tag_data, 'title'=>$title])
 
@@ -40,16 +40,7 @@
                 <section class="scroll-section" id="hover">
                     <div class="card mb-5">
                         <div class="card-body">
-                            @if(count($rows))
-                                <p>
-                                    {{ __('partner') }} :
-                                    {{ $rows[0]->partner->name }}
 
-                                    | {{ __('doctor') }} :
-                                    {{$rows[0]->doctor->fullname}}
-                                    {{ __('partner_doctor_balance_details') }}
-                                </p>
-                            @endif
                             <!-- Hover Table Start -->
                             <table class="table table-sm table-bordered table-striped">
                                 <thead>
@@ -85,7 +76,7 @@
                                                 {{ __('pay') }}
                                             </button>
 
-                                            <a href="{{ route('admin.partners.doctor.patient', [$partner->id, $doctorId, $row->patient_id ?? 0]) }}"
+                                            <a href="{{ route('admin.partners.user.patient', [$partner->id, $doctorId, $row->patient_id ?? 0]) }}"
                                                class="btn btn-primary btn-sm">
                                                 {{ __('debt_details') }}
                                             </a>

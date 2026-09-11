@@ -10,7 +10,7 @@ class CashierLedger extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'cashier_id','doctor_id','patient_id','partner_id',
+        'cashier_id','user_id','patient_id','partner_id',
         'type','method','amount','note','created_at'
     ];
 
@@ -25,7 +25,7 @@ class CashierLedger extends Model
         'adjust_out',
     ];
 
-    public function doctor()  { return $this->belongsTo(User::class,'doctor_id'); }
+    public function user()  { return $this->belongsTo(User::class,'user_id'); }
     public function patient() { return $this->belongsTo(Patient::class,'patient_id'); }
     public function partner() { return $this->belongsTo(Partner::class,'partner_id'); }
 }

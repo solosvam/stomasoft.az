@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = 'Saytdan göndərilən mesajlar';
-    $breadcrumbs = ["/admin"=>"White Dent", ""=>"Mesajlar"]
+    $breadcrumbs = ["/admin"=>"StomaSoft", ""=>"Mesajlar"]
 @endphp
 @extends('admin.layout',['html_tag_data'=>$html_tag_data, 'title'=>$title])
 

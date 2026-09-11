@@ -11,7 +11,7 @@ class PatientLedger extends Model
 
     protected $fillable = [
         'patient_id',
-        'doctor_id',
+        'user_id',
         'session_id',
         'type',        // service | payment | adjustment | refund
         'amount',
@@ -28,9 +28,9 @@ class PatientLedger extends Model
         return $this->belongsTo(Patient::class, 'patient_id');
     }
 
-    public function doctor()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function session()

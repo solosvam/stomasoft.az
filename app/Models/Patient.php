@@ -35,30 +35,30 @@ class Patient extends Model
 
     public function partnerBalances()
     {
-        return $this->hasMany(PartnerDoctorPatientBalance::class, 'patient_id')
+        return $this->hasMany(PartnerUserPatientBalance::class, 'patient_id')
             ->where('balance','>',0);
     }
 
-    public function doctorBalances()
+    public function userBalances()
     {
-        return $this->hasMany(PatientDoctorBalance::class,'patient_id');
+        return $this->hasMany(PatientUserBalance::class,'patient_id');
     }
 
-    public function doctorDeposit()
+    public function userDeposit()
     {
-        return $this->hasMany(PatientDoctorDeposit::class,'patient_id');
+        return $this->hasMany(PatientUserDeposit::class,'patient_id');
     }
 
     public function getTotalBalanceAttribute()
     {
-        return $this->doctorBalances()
+        return $this->userBalances()
             ->where('balance','>',0)
             ->sum('balance');
     }
 
     public function getTotalDepositAttribute()
     {
-        return $this->doctorDeposit()
+        return $this->userDeposit()
             ->where('deposit','>',0)
             ->sum('deposit');
     }
@@ -68,7 +68,7 @@ class Patient extends Model
         return $this->hasMany(PatientFiles::class, 'patient_id', 'id')->orderByDesc('id');
     }
 
-    public function doctor()
+    public function user()
     {
         return $this->belongsTo(User::class,'user_id');
     }

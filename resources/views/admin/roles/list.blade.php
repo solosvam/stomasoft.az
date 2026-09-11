@@ -3,7 +3,7 @@
     $title = __('role_list');
 
     $breadcrumbs = [
-    "/admin"=>"White Dent",
+    "/admin"=>"StomaSoft",
     ""=>__('menu_roles')
     ];
 @endphp

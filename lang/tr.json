@@ -12,10 +12,16 @@
     "menu_messages": "Mesajlar",
     "menu_settings": "Ayarlar",
     "menu_stock": "Stok",
+
     "menu_patients": "Hastalar",
     "menu_patient_list": "Hasta listesi",
     "menu_patient_debtors": "Borcu olanlar",
     "menu_patient_activeservices": "Hizmeti devam edenler",
+
+    "menu_doctors": "Doktorlar",
+    "menu_doctor_list": "Doktor Listesi",
+    "new_doctor_btn": "Yeni Doktor",
+
     "menu_partners": "Partnerler",
     "menu_crm": "CRM",
     "menu_cashier": "KASA",

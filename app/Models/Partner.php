@@ -17,9 +17,9 @@ class Partner extends Model
         'type'
     ];
 
-    public function doctorBalances()
+    public function userBalances()
     {
-        return $this->hasMany(PartnerDoctorBalance::class,'partner_id');
+        return $this->hasMany(PartnerUserBalance::class,'partner_id');
     }
 
     public function user()

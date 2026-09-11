@@ -10,7 +10,7 @@ class Prescription extends Model
     public $timestamps = false;
     protected $hidden = [];
     protected $fillable = [
-        'doctor_id',
+        'user_id',
         'patient_id',
     ];
 
@@ -24,8 +24,8 @@ class Prescription extends Model
         return $this->belongsTo(Patient::class, 'patient_id');
     }
 
-    public function doctor()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

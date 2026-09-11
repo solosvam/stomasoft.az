@@ -3,7 +3,7 @@
     $title = __('patient_list');
 
     $breadcrumbs = [
-    "/admin"=>"White Dent",
+    "/admin"=>"StomaSoft",
     ""=>__('menu_patients')
     ];
 @endphp

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
-use App\Models\PatientDoctorBalance;
+use App\Models\PatientUserBalance;
 use App\Models\PatientFiles;
 use App\Models\PatientServiceSessionItems;
 use Carbon\Carbon;
@@ -28,7 +28,7 @@ class PatientController extends Controller
 
     public function debtors()
     {
-        $debtors = PatientDoctorBalance::with(['patient','doctor'])
+        $debtors = PatientUserBalance::with(['patient','user'])
             ->where('balance','>',0)
             ->whereHas('patient', function ($q) {
                 $q->where('user_id', auth()->id());
@@ -78,11 +78,11 @@ class PatientController extends Controller
 
                 $hasOperation =
                     $patient->sessions()->exists()
-                    || $patient->doctorBalances()->exists()
+                    || $patient->userBalances()->exists()
                     || $patient->partnerBalances()->exists()
                     || $patient->files()->exists()
                     || $patient->prescriptions()->exists()
-                    || $patient->doctorDeposit()->exists()
+                    || $patient->userDeposit()->exists()
                     || $patient->ledgers()->exists()
                     || $patient->depositLedgers()->exists()
                     || $patient->reservations()->exists();

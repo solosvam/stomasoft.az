@@ -16,13 +16,34 @@ class MainController extends Controller
 {
     public function index()
     {
-        $patients = Patient::where('user_id',auth()->id())->orderBy('id', 'desc')->limit(20)->get();
-        $sessions = PatientServiceSession::where('user_id',auth()->id())->whereDate('date',Carbon::today())->orderBy('id','desc')->get();
+        $user = auth()->user();
+
+        if ($user->account_type === 'technician') {
+            return $this->technicianDashboard();
+        }
+
+        return $this->doctorDashboard();
+    }
+
+    private function doctorDashboard()
+    {
+        $patients = Patient::where('user_id', auth()->id())
+            ->orderBy('id', 'desc')
+            ->limit(20)
+            ->get();
+
+        $sessions = PatientServiceSession::where('user_id', auth()->id())
+            ->whereDate('date', Carbon::today())
+            ->orderBy('id', 'desc')
+            ->get();
+
         $services = Services::all();
+
         $todaySlots = $this->buildReservationSlots(Carbon::today(), auth()->id());
         $tomorrowSlots = $this->buildReservationSlots(Carbon::tomorrow(), auth()->id());
+
         $reservations = Reservation::with(['patient', 'service'])
-            ->where('doctor_id', auth()->id())
+            ->where('user_id', auth()->id())
             ->where('status', 'pending')
             ->whereDate('date', '>=', Carbon::today())
             ->orderByRaw("
@@ -36,7 +57,19 @@ class MainController extends Controller
             ->orderBy('hour', 'asc')
             ->get();
 
-        return view('admin.pages.index',compact('patients','sessions','reservations','services','todaySlots','tomorrowSlots'));
+        return view('admin.pages.index', compact(
+            'patients',
+            'sessions',
+            'reservations',
+            'services',
+            'todaySlots',
+            'tomorrowSlots'
+        ));
+    }
+
+    private function technicianDashboard()
+    {
+        return view('admin.technician.index');
     }
 
     private function buildReservationSlots($date, $doctorId)
@@ -46,7 +79,7 @@ class MainController extends Controller
         [$workStart, $workEnd] = explode('-', $doctor->work_hours ?? '10:00-20:00');
 
         $reservations = Reservation::whereDate('date', $date->format('Y-m-d'))
-            ->where('doctor_id', $doctorId)
+            ->where('user_id', $doctorId)
             ->where('status', 'pending')
             ->get()
             ->keyBy(function ($item) {
@@ -98,6 +131,7 @@ class MainController extends Controller
     public function settings()
     {
         $user = auth()->user();
+        $user->load('doctorProfile');
 
         return view('admin.pages.settings', compact('user'));
     }
@@ -114,14 +148,15 @@ class MainController extends Controller
         ], [
             'clinic_name.required' => 'Klinika adı mütləqdir.',
             'clinic_name.max' => 'Klinika adı maksimum 255 simvol ola bilər.',
-
             'clinic_address.max' => 'Klinika ünvanı maksimum 500 simvol ola bilər.',
-
             'work_hours.regex' => 'İş saatı xx:xx-xx:xx formatında olmalıdır. Məsələn: 10:00-20:00',
         ]);
 
-        auth()->user()->update($validated);
+        auth()->user()->doctorProfile()->updateOrCreate(
+            ['user_id' => auth()->id()],
+            $validated
+        );
 
-        return back()->with('success','Ayarlar yeniləndi');
+        return back()->with('success', 'Ayarlar yeniləndi');
     }
 }

@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = __('menu_crm');
-    $breadcrumbs = ["/admin"=> "White Dent", route('admin.crm.index') => "CRM", "#"=> __('menu_crm')]
+    $breadcrumbs = ["/admin"=> "StomaSoft", route('admin.crm.index') => "CRM", "#"=> __('menu_crm')]
 @endphp
 @extends('admin.layout',[ 'title'=>$title])
 @section('js_page')

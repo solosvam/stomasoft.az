@@ -3,7 +3,7 @@
 namespace App\Services\Cashier;
 
 use App\Models\CashierLedger;
-use App\Models\DoctorCashBalance;
+use App\Models\UserCashBalance;
 use Carbon\Carbon;
 
 class CashierIndexService
@@ -12,18 +12,18 @@ class CashierIndexService
     {
         [$from, $to] = $this->resolveDateRange($dates);
 
-        $doctorCash = DoctorCashBalance::with('doctor')
-            ->where('doctor_id', $userId)
+        $userCash = UserCashBalance::with('user')
+            ->where('user_id', $userId)
             ->first();
 
-        $incomeLogs = CashierLedger::with(['doctor', 'patient'])
+        $incomeLogs = CashierLedger::with(['user', 'patient'])
             ->where('cashier_id', $userId)
             ->whereIn('type', CashierLedger::INCOME_TYPES)
             ->whereBetween('created_at', [$from, $to])
             ->orderByDesc('id')
             ->get();
 
-        $expenseLogs = CashierLedger::with(['doctor', 'partner'])
+        $expenseLogs = CashierLedger::with(['user', 'partner'])
             ->where('cashier_id', $userId)
             ->whereIn('type', CashierLedger::EXPENSE_TYPES)
             ->whereBetween('created_at', [$from, $to])
@@ -49,7 +49,7 @@ class CashierIndexService
             ")
                     ->first();
 
-        return compact('doctorCash', 'incomeLogs', 'expenseLogs', 'incomeSummary','expenseSummary');
+        return compact('userCash', 'incomeLogs', 'expenseLogs', 'incomeSummary','expenseSummary');
     }
 
     private function resolveDateRange(?string $dates): array
@@ -73,11 +73,11 @@ class CashierIndexService
     {
         [$from, $to] = $this->resolveDateRange($dates);
 
-        $doctorCash = DoctorCashBalance::with('doctor')
-            ->where('doctor_id', $userId)
+        $userCash = UserCashBalance::with('user')
+            ->where('user_id', $userId)
             ->first();
 
-        $incomeLogs = CashierLedger::with(['doctor', 'patient'])
+        $incomeLogs = CashierLedger::with(['user', 'patient'])
             ->where('cashier_id', $userId)
             ->whereIn('type', CashierLedger::INCOME_TYPES)
             ->whereBetween('created_at', [$from, $to])
@@ -85,7 +85,7 @@ class CashierIndexService
             ->paginate(20, ['*'], 'income_page')
             ->appends(['dates' => $dates]);
 
-        $expenseLogs = CashierLedger::with(['doctor', 'partner'])
+        $expenseLogs = CashierLedger::with(['user', 'partner'])
             ->where('cashier_id', $userId)
             ->whereIn('type', CashierLedger::EXPENSE_TYPES)
             ->whereBetween('created_at', [$from, $to])
@@ -139,7 +139,7 @@ class CashierIndexService
         }
 
         return compact(
-            'doctorCash',
+            'userCash',
             'incomeLogs',
             'expenseLogs',
             'incomeSummary',

@@ -7,11 +7,11 @@ use App\Http\Requests\Backend\AddPatientServiceRequest;
 use App\Http\Requests\Backend\PatientPayRequest;
 use App\Http\Requests\Backend\UpdatePatientSessionRequest;
 use App\Models\CashierLedger;
-use App\Models\DoctorCashBalance;
+use App\Models\UserCashBalance;
 use App\Models\Patient;
 use App\Models\PatientDepositLedger;
-use App\Models\PatientDoctorBalance;
-use App\Models\PatientDoctorDeposit;
+use App\Models\PatientUserBalance;
+use App\Models\PatientUserDeposit;
 use App\Models\PatientLedger;
 use App\Models\PatientServiceSession;
 use App\Models\PatientServiceSessionItems;
@@ -45,7 +45,6 @@ class CrmController extends Controller
 
         return view('admin.crm.patient', $data);
     }
-
 
     public function addService(AddPatientServiceRequest $request, $id, AddPatientServiceService $addPatientServiceService): RedirectResponse {
         $addPatientServiceService->handle(
@@ -87,8 +86,8 @@ class CrmController extends Controller
                     ->where('user_id', $cashierId)
                     ->firstOrFail();
 
-                $deposit = PatientDoctorDeposit::where('patient_id', $patient->id)
-                    ->where('doctor_id', $doctorId)
+                $deposit = PatientUserDeposit::where('patient_id', $patient->id)
+                    ->where('user_id', $doctorId)
                     ->lockForUpdate()
                     ->first();
 
@@ -99,9 +98,9 @@ class CrmController extends Controller
                         'updated_at' => now(),
                     ]);
                 } else {
-                    PatientDoctorDeposit::create([
+                    PatientUserDeposit::create([
                         'patient_id' => $patient->id,
-                        'doctor_id'  => $doctorId,
+                        'user_id'  => $doctorId,
                         'deposit'    => $amount,
                         'updated_at' => now(),
                     ]);
@@ -109,7 +108,7 @@ class CrmController extends Controller
 
                 PatientDepositLedger::create([
                     'patient_id' => $patient->id,
-                    'doctor_id'  => $doctorId,
+                    'user_id'  => $doctorId,
                     'cashier_id' => $cashierId,
                     'type'       => 'deposit',
                     'method'     => $method,
@@ -120,7 +119,7 @@ class CrmController extends Controller
 
                 CashierLedger::create([
                     'cashier_id' => $cashierId,
-                    'doctor_id'  => $doctorId,
+                    'user_id'  => $doctorId,
                     'patient_id' => $patient->id,
                     'partner_id' => null,
                     'type'       => 'patient_payment',
@@ -130,15 +129,15 @@ class CrmController extends Controller
                     'created_at' => now(),
                 ]);
 
-                $doctorCashBalance = DoctorCashBalance::where('doctor_id', $doctorId)
+                $doctorCashBalance = UserCashBalance::where('user_id', $doctorId)
                     ->lockForUpdate()
                     ->first();
 
                 if ($doctorCashBalance) {
                     $doctorCashBalance->increment('balance', $amount);
                 } else {
-                    DoctorCashBalance::create([
-                        'doctor_id' => $doctorId,
+                    UserCashBalance::create([
+                        'user_id' => $doctorId,
                         'balance'   => $amount,
                     ]);
                 }
@@ -162,7 +161,6 @@ class CrmController extends Controller
         $session->save();
         return redirect()->back()->with('success', 'xidmət bitirildi');
     }
-
 
     public function editSession($id, EditPatientSessionService $editPatientSessionService): View|RedirectResponse
     {
@@ -205,10 +203,10 @@ class CrmController extends Controller
                 $doctorId  = (int) auth()->id();
                 $oldTotal  = (float) $session->total_cost;
 
-                $balance = PatientDoctorBalance::firstOrCreate(
+                $balance = PatientUserBalance::firstOrCreate(
                     [
                         'patient_id' => $patientId,
-                        'doctor_id'  => $doctorId,
+                        'user_id'  => $doctorId,
                     ],
                     [
                         'balance' => 0,
@@ -217,7 +215,7 @@ class CrmController extends Controller
 
                 PatientLedger::where('session_id', $session->id)
                     ->where('patient_id', $patientId)
-                    ->where('doctor_id', $doctorId)
+                    ->where('user_id', $doctorId)
                     ->where('type', 'service')
                     ->delete();
 
@@ -260,7 +258,7 @@ class CrmController extends Controller
         ]);
 
         $prescription = Prescription::create([
-            'doctor_id'  => auth()->id(),
+            'user_id'  => auth()->id(),
             'patient_id' => $patient->id,
         ]);
 

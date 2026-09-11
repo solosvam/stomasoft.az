@@ -13,7 +13,7 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        $reservations = Reservation::where('doctor_id', auth()->id())
+        $reservations = Reservation::where('user_id', auth()->id())
             ->orderByRaw("
         case
             when status = 'pending' then 0
@@ -55,7 +55,7 @@ class ReservationController extends Controller
             return back()->withInput()->with('error', 'Keçmiş tarix və saata rezervasiya yaratmaq olmaz');
         }
 
-        $exists = Reservation::where('doctor_id', $doctorId)
+        $exists = Reservation::where('user_id', $doctorId)
             ->where('date', $date)
             ->where('hour', $hour)
             ->where('status', 'pending')
@@ -66,7 +66,7 @@ class ReservationController extends Controller
         }
 
         Reservation::create([
-            'doctor_id'  => $doctorId,
+            'user_id'  => $doctorId,
             'patient_id' => $patient_id,
             'service_id' => $validated['service_id'],
             'date'       => $date,
@@ -81,12 +81,12 @@ class ReservationController extends Controller
     public function edit($id)
     {
         $reservation = Reservation::where('id', $id)
-            ->where('doctor_id', auth()->id())
+            ->where('user_id', auth()->id())
             ->where('status', 'pending')
             ->firstOrFail();
 
         $reservations = Reservation::whereDate('date', $reservation->date)
-            ->where('doctor_id', $reservation->doctor_id)
+            ->where('user_id', $reservation->user_id)
             ->where('status', 'pending')
             ->get()
             ->keyBy(function ($item) {
@@ -142,7 +142,7 @@ class ReservationController extends Controller
     public function delete($id)
     {
         $reservation = Reservation::where('id', $id)
-            ->where('doctor_id', auth()->id())
+            ->where('user_id', auth()->id())
             ->firstOrFail();
 
         $reservation->delete();
@@ -169,7 +169,7 @@ class ReservationController extends Controller
         $doctorId = Auth::id();
 
         $reservation = Reservation::where('id', $id)
-            ->where('doctor_id', $doctorId)
+            ->where('user_id', $doctorId)
             ->first();
 
         if (!$reservation) {
@@ -186,7 +186,7 @@ class ReservationController extends Controller
             return back()->withInput()->with('error', 'Keçmiş tarix və saata rezervasiya yeniləmək olmaz');
         }
 
-        $exists = Reservation::where('doctor_id', $doctorId)
+        $exists = Reservation::where('user_id', $doctorId)
             ->where('status', 'pending')
             ->where('id', '!=', $reservation->id)
             ->whereDate('date', $validated['date'])
@@ -221,7 +221,7 @@ class ReservationController extends Controller
         ]);
 
         $reservation = Reservation::where('id', $id)
-            ->where('doctor_id', auth()->id())
+            ->where('user_id', auth()->id())
             ->first();
 
         if (!$reservation) {
@@ -265,7 +265,7 @@ class ReservationController extends Controller
             return back()->withInput()->with('error', 'Keçmiş tarix və saata rezervasiya yaratmaq olmaz');
         }
 
-        $exists = Reservation::where('doctor_id', $doctorId)
+        $exists = Reservation::where('user_id', $doctorId)
             ->where('date', $date)
             ->where('hour', $hour)
             ->where('status', 'pending')
@@ -276,7 +276,7 @@ class ReservationController extends Controller
         }
 
         Reservation::create([
-            'doctor_id'  => $doctorId,
+            'user_id'  => $doctorId,
             'service_id' => $validated['service_id'],
             'patient_id' => $validated['patient_id'],
             'date'       => $date,
@@ -298,7 +298,7 @@ class ReservationController extends Controller
         }
 
         $reservations = Reservation::whereDate('date', $date)
-            ->where('doctor_id', $doctorId)
+            ->where('user_id', $doctorId)
             ->where('status', 'pending')
             ->get()
             ->keyBy(function ($item) {
@@ -343,7 +343,7 @@ class ReservationController extends Controller
         ]);
 
         Reservation::whereIn('id', $request->ids)
-            ->where('doctor_id', auth()->id())
+            ->where('user_id', auth()->id())
             ->delete();
 
         return response()->json(['success' => true]);

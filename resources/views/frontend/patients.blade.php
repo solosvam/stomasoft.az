@@ -593,7 +593,7 @@
         @forelse($doctors as $index => $doctor)
             @php
                 $color   = $colors[$index % count($colors)];
-                $initials = collect(explode(' ', $doctor->clinic_name))
+                $initials = collect(explode(' ', $doctor->doctorProfile?->clinic_name))
                                 ->take(2)
                                 ->map(fn($w) => strtoupper(substr($w, 0, 1)))
                                 ->implode('');
@@ -601,15 +601,15 @@
             @endphp
 
             <div class="clinic-card"
-                 data-search="{{ strtolower($doctor->clinic_name . ' ' . $doctor->fullname . ' ' . $doctor->clinic_address) }}"
-                 onclick="openModal({{ $doctor->id }}, '{{ addslashes($doctor->clinic_name) }}', '{{ addslashes($doctor->fullname) }}', '{{ addslashes($doctor->clinic_address) }}', '{{ $initials }}', '{{ $color['bg'] }}', '{{ $color['color'] }}', {{ $services->toJson() }})">
+                 data-search="{{ strtolower($doctor->doctorProfile?->clinic_name . ' ' . $doctor->fullname . ' ' . $doctor->doctorProfile?->clinic_address) }}"
+                 onclick="openModal({{ $doctor->id }}, '{{ addslashes($doctor->doctorProfile?->clinic_name) }}', '{{ addslashes($doctor->fullname) }}', '{{ addslashes($doctor->doctorProfile?->clinic_address) }}', '{{ $initials }}', '{{ $color['bg'] }}', '{{ $color['color'] }}', {{ $services->toJson() }})">
 
                 <div class="card-top">
                     <div class="avatar" style="background: {{ $color['bg'] }}; color: {{ $color['color'] }}">
                         {{ $initials }}
                     </div>
                     <div>
-                        <div class="clinic-name">{{ $doctor->clinic_name }}</div>
+                        <div class="clinic-name">{{ $doctor->doctorProfile?->clinic_name }}</div>
                         <div class="doctor-name">Dr. {{ $doctor->fullname }}</div>
                     </div>
                 </div>
@@ -619,7 +619,7 @@
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
                         <circle cx="12" cy="9" r="2.5"/>
                     </svg>
-                    {{ $doctor->clinic_address }}
+                    {{ $doctor->doctorProfile?->clinic_address }}
                 </div>
 
                 <div class="card-footer">
@@ -679,7 +679,7 @@
         {{-- Form --}}
         <form id="reservationForm" onsubmit="submitReservation(event)">
             @csrf
-            <input type="hidden" id="doctorIdInput" name="doctor_id">
+            <input type="hidden" id="doctorIdInput" name="user_id">
 
             <div class="field">
                 <label class="field-label">{{ __('patients.fullname') }}</label>
@@ -777,7 +777,6 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeModal();
     });
-
     /* ── Load hours via AJAX ── */
     function loadHours() {
         const date = document.getElementById('dateInput').value;
@@ -786,23 +785,26 @@
         if (!date || !doctorId) return;
 
         document.getElementById('hourInput').value = '';
-        document.getElementById('hours-container').innerHTML = '<div class="hours-loading">{{ __('patients.loading') }}</div>';
+        document.getElementById('hours-container').innerHTML =
+            '<div class="hours-loading">{{ __("patients.loading") }}</div>';
 
-        fetch('{{ route('page.reservation.hours') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify({ date: date, doctor: doctorId })
-        })
-        .then(function(r) { return r.text(); })
-        .then(function(html) {
-            document.getElementById('hours-container').innerHTML = html || '<div class="hours-placeholder">{{ __('patients.no_slots') }}</div>';
-        })
-        .catch(function() {
-            document.getElementById('hours-container').innerHTML = '<div class="hours-placeholder">{{ __('patients.error') }}</div>';
+        const params = new URLSearchParams({
+            date: date,
+            doctor: doctorId
         });
+
+        fetch('{{ route('page.reservation.hours') }}?' + params.toString(), {
+            method: 'GET'
+        })
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('hours-container').innerHTML =
+                    html || '<div class="hours-placeholder">{{ __("patients.no_slots") }}</div>';
+            })
+            .catch(() => {
+                document.getElementById('hours-container').innerHTML =
+                    '<div class="hours-placeholder">{{ __("patients.error") }}</div>';
+            });
     }
 
     /* ── Time slot select (called from reservationHours HTML) ── */

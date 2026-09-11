@@ -3,7 +3,7 @@
     $title = __('patient_partner');
 
     $breadcrumbs = [
-        "/admin" => "White Dent",
+        "/admin" => "StomaSoft",
         "" => __('partner_doctor_patient_balance_details')
     ];
 @endphp
@@ -45,9 +45,7 @@
                     <div class="card mb-5">
                         <div class="card-body">
                             <p>
-                                {{ __('partner') }} : {{ $rows[0]->partner->name }}
-                                | {{ __('doctor') }} : {{ $rows[0]->doctor->fullname }}
-                                | {{ __('patient') }} :
+                                {{ __('partner') }} : {{ $rows[0]->partner->name }} |
                                 {{ $rows[0]->patient?->fullname ?? __('general_purchase') }}
                                 {{ __('balance') }} {{ __('debt_details') }}
                             </p>

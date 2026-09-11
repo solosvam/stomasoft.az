@@ -2,7 +2,7 @@
      $html_tag_data = [];
      $title = __('patient_profile');
      $breadcrumbs = [
-         "/admin"=> "White Dent",
+         "/admin"=> "StomaSoft",
          route('admin.crm.index') => __('menu_crm'),
          "#"=> $patient->fullname
      ];
@@ -153,7 +153,7 @@
                                 <tbody>
 
                                 <tr class="table-header-1">
-                                    <td colspan="2"><strong>{{ $session->doctor->fullname }}</strong></td>
+                                    <td colspan="2"><strong>{{ $session->user->fullname }}</strong></td>
                                     <td colspan="1"><strong>{{ __('date') }} : {{$session->date}}</strong></td>
                                     <td colspan="2"><strong>{{ __('total_price') }} : {{$session->total_cost}} AZN</strong></td>
                                     <td colspan="1"><strong>{{ __('general_note') }} : {{($session->note) ?? '---'}}</strong></td>

@@ -3,7 +3,7 @@
 namespace App\Services\Crm;
 
 use App\Models\Patient;
-use App\Models\PatientDoctorBalance;
+use App\Models\PatientUserBalance;
 use App\Models\PatientLedger;
 use App\Models\PatientServiceSession;
 use App\Models\PatientServiceSessionItems;
@@ -25,7 +25,7 @@ class AddPatientServiceService
                 $data['comment'] ?? null
             );
 
-            $balance = $this->getOrCreateDoctorBalance(
+            $balance = $this->getOrCreateUserBalance(
                 $patient->id,
                 $doctorId
             );
@@ -102,14 +102,14 @@ class AddPatientServiceService
         ]);
     }
 
-    private function getOrCreateDoctorBalance(
+    private function getOrCreateUserBalance(
         int $patientId,
         int $doctorId
-    ): PatientDoctorBalance {
-        return PatientDoctorBalance::firstOrCreate(
+    ): PatientUserBalance {
+        return PatientUserBalance::firstOrCreate(
             [
                 'patient_id' => $patientId,
-                'doctor_id'  => $doctorId,
+                'user_id'  => $doctorId,
             ],
             [
                 'balance' => 0,
@@ -146,7 +146,7 @@ class AddPatientServiceService
     ): void {
         PatientLedger::create([
             'patient_id' => $patientId,
-            'doctor_id'  => $doctorId,
+            'user_id'  => $doctorId,
             'session_id' => $sessionId,
             'type'       => 'service',
             'amount'     => $amount,

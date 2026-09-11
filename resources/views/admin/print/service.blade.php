@@ -148,9 +148,9 @@
 
 <div class="center">
     <div class="title">{{ __('service_invoice') }}</div>
-    <div class="clinic">{{ $patient->doctor->clinic_name ?? '' }}</div>
-    <div class="muted">{{ $patient->doctor->clinic_address ?? '' }}</div>
-    <div class="muted">{{ $patient->doctor->mobile ?? '' }}</div>
+    <div class="clinic">{{ $patient->user->doctorProfile->clinic_name ?? '' }}</div>
+    <div class="muted">{{ $patient->user->doctorProfile->clinic_address ?? '' }}</div>
+    <div class="muted">{{ $patient->user->doctorProfile->mobile ?? '' }}</div>
 </div>
 
 <div class="line"></div>
@@ -167,7 +167,7 @@
 
 <div class="row">
     <span class="label">{{ __('doctor') }}:</span>
-    <span>{{ $patient->doctor->fullname ?? '-' }}</span>
+    <span>{{ $patient->user->fullname ?? '-' }}</span>
 </div>
 
 <div class="line"></div>

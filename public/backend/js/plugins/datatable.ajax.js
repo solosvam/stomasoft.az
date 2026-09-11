@@ -33,6 +33,7 @@ class RowsAjax {
     this._staticHeight = 62;
 
     this._createInstance();
+    this._createInstanceDoctor();
     this._addListeners();
     this._extend();
   }
@@ -94,6 +95,65 @@ class RowsAjax {
                             <a href="/crm/${row.id}" class="btn btn-primary btn-sm">CRM</a>
                             <a href="/patient/edit/${row.id}" class="btn btn-primary btn-sm">Edit</a>
                             <a href="/patient/delete/${row.id}" class="btn btn-danger btn-sm">Sil</a>
+                          </div>`;
+                    }
+                }
+            ],
+        });
+    }
+    _createInstanceDoctor() {
+        const _this = this;
+
+        this._datatable = jQuery('#doctorsAjaxTable').DataTable({
+            scrollX: true,
+            buttons: ['copy', 'excel', 'csv', 'print'],
+            info: false,
+            processing: true,
+            ajax: {
+                url: '/doctor/list-data',
+                type: 'GET',
+                dataSrc: ''
+            },
+            order: [],
+            sDom: '<"row"<"col-sm-12"<"table-container"t>r>><"row"<"col-12"p>>',
+            pageLength: 10,
+            columns: [
+                { data: null },
+                { data: 'fullname' },
+                { data: 'mobile' },
+                { data: 'balance' },
+                { data: null }
+            ],
+
+            language: {
+                paginate: {
+                    previous: '<i class="cs-chevron-left"></i>',
+                    next: '<i class="cs-chevron-right"></i>',
+                },
+            },
+            initComplete: function () {
+                _this._setInlineHeight();
+            },
+            drawCallback: function () {
+                _this._setInlineHeight();
+            },
+            columnDefs: [
+                {
+                    targets: 0,
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1;
+                    },
+                },
+                {
+                    targets: 4,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        return `
+                          <div class="d-flex gap-2">
+                            <a href="/tcrm/${row.id}" class="btn btn-primary btn-sm">CRM</a>
+                            <a href="/doctor/edit/${row.id}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="/doctor/delete/${row.id}" class="btn btn-danger btn-sm">Sil</a>
                           </div>`;
                     }
                 }

@@ -16,18 +16,14 @@ class User extends Authenticatable
     protected $table = 'user';
     public $timestamps = false;
     protected $fillable = [
-        "isroot",
         "name",
         "surname",
         "mobile",
         "login",
         "password",
         "is_active",
-        "is_doctor",
+        "account_type",
         "subscription_ends_at",
-        "clinic_name",
-        "clinic_address",
-        "work_hours",
         "parent_id",
         "specialty_id"
     ];
@@ -45,22 +41,21 @@ class User extends Authenticatable
 
     public function services(): HasMany
     {
-        return $this->hasMany(Services::class, 'doctor_id');
+        return $this->hasMany(Services::class, 'user_id');
     }
 
     public function partners(): HasMany
     {
         return $this->hasMany(Partner::class, 'user_id');
     }
-
-    public function specialty(): BelongsTo
+    public function doctorProfile()
     {
-        return $this->belongsTo(Specialty::class, 'specialty_id');
+        return $this->hasOne(DoctorProfile::class, 'user_id');
     }
 
     public function locationMap(): string
     {
-        return $this->specialty?->location_type ?? 'tooth_map';
+        return $this->doctorProfile->specialty?->location_type ?? 'tooth_map';
     }
 
 }

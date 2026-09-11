@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Messages;
+use App\Models\DoctorProfile;
 use App\Models\Reservation;
-use App\Models\Services;
 use App\Models\User;
-use App\Services\Telegram;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class PagesController extends Controller
 {
@@ -26,13 +23,24 @@ class PagesController extends Controller
 
     public function patients()
     {
-        $doctors = User::whereNotNull('clinic_name')
-            ->where('clinic_name', '!=', '')
-            ->where('name','!=','demo')
+        $doctors = User::where('account_type', 'doctor')
+            ->where('name', '!=', 'demo')
+            ->whereHas('doctorProfile', function ($q) {
+                $q->whereNotNull('clinic_name')
+                    ->where('clinic_name', '!=', '');
+            })
             ->with([
-                'services' => fn($q) => $q->withoutGlobalScope('doctor')->where('active', 1)->where('visible',1)
+                'doctorProfile',
+                'services' => fn($q) => $q
+                    ->withoutGlobalScope('user')
+                    ->where('active', 1)
+                    ->where('visible', 1)
             ])
-            ->orderBy('clinic_name')
+            ->orderBy(
+                DoctorProfile::select('clinic_name')
+                    ->whereColumn('doctor_profiles.user_id', 'user.id')
+                    ->limit(1)
+            )
             ->get();
 
         return view('frontend.patients', compact('doctors'));
@@ -52,7 +60,7 @@ class PagesController extends Controller
         [$workStart, $workEnd] = explode('-', $doctor->work_hours ?? '10:00-20:00');
 
         $busy = Reservation::whereDate('date', $date)
-            ->where('doctor_id', $doctorId)
+            ->where('user_id', $doctorId)
             ->where('status', 'pending')
             ->pluck('hour')
             ->map(fn($hour) => Carbon::parse($hour)->format('H:i'))
@@ -99,7 +107,7 @@ class PagesController extends Controller
         $validated = $request->validate([
             'fullname'  => 'required|string|min:5|max:50',
             'mobile'    => 'required|string|min:7|max:13',
-            'doctor_id' => 'required|exists:user,id',
+            'user_id' => 'required|exists:user,id',
             'service_id' => 'required|integer',
             'date'      => 'required|date',
             'hour'      => 'required|string',
@@ -114,8 +122,8 @@ class PagesController extends Controller
             'mobile.min'         => 'Mobil nömrə minimum 7 simvol olmalıdır',
             'mobile.max'         => 'Mobil nömrə maksimum 13 simvol olmalıdır',
 
-            'doctor_id.required' => 'Həkim seç',
-            'doctor_id.exists'   => 'Seçilən həkim tapılmadı',
+            'user_id.required' => 'Həkim seç',
+            'user_id.exists'   => 'Seçilən həkim tapılmadı',
 
             'date.required'      => 'Tarix seç',
             'date.date'          => 'Tarix düzgün deyil',
@@ -132,7 +140,7 @@ class PagesController extends Controller
             return response()->json(['success' => false, 'message' => 'Keçmiş tarix və saata rezervasiya yaratmaq olmaz'], 422);
         }
 
-        $exists = Reservation::where('doctor_id', $validated['doctor_id'])
+        $exists = Reservation::where('user_id', $validated['user_id'])
             ->where('date', $date)
             ->where('hour', $hour)
             ->where('status', 'pending')
@@ -143,7 +151,7 @@ class PagesController extends Controller
         }
 
         Reservation::create([
-            'doctor_id'   => $validated['doctor_id'],
+            'user_id'   => $validated['user_id'],
             'customer_id' => null,
             'service_id'  => $validated['service_id'],
             'date'        => $date,

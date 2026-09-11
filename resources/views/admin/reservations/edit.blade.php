@@ -3,7 +3,7 @@
     $title = __('reservation_edit');
 
     $breadcrumbs = [
-    "/admin"=>"White Dent",
+    "/admin"=>"StomaSoft",
     ""=>__('reservation_edit')
     ];
 @endphp

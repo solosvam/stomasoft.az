@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = __('menu_partners');
-    $breadcrumbs = ["/admin"=>"White Dent", ""=>__('menu_partners')];
+    $breadcrumbs = ["/admin"=>"StomaSoft", ""=>__('menu_partners')];
 @endphp
 @extends('admin.layout',['html_tag_data'=>$html_tag_data, 'title'=>$title])
 
@@ -117,7 +117,7 @@
                                             <a href="{{route('admin.partners.delete',$partner->id)}}" class="btn btn-danger btn-sm">{{ __('delete') }}</a>
                                             <a href="{{route('admin.partners.edit',$partner->id)}}" class="btn btn-primary btn-sm">{{ __('edit') }}</a>
                                             @if($partner->balance)
-                                                <a href="{{route('admin.partners.doctor.balance',$partner->id)}}" class="btn btn-primary btn-sm">{{ __('debt_details') }}</a>
+                                                <a href="{{route('admin.partners.user.balance',$partner->id)}}" class="btn btn-primary btn-sm">{{ __('debt_details') }}</a>
                                             @endif
                                         </td>
                                     </tr>
@@ -155,11 +155,15 @@
                                    placeholder="{{ __('mobile_number') }}"
                                    value="{{ old('mobile') }}"
                                    required>
+                            @if(auth()->user()->account_type == 'doctor')
                             <label>Növ</label>
                             <select class="form-select" name="type">
                                 <option value="supplier">{{ __('supplier') }}</option>
                                 <option value="technician">{{ __('technician') }}</option>
                             </select>
+                            @else
+                                <input type="hidden" name="type" value="supplier">
+                            @endif
                             <hr>
                             <button type="submit" class="btn btn-primary">{{ __('add') }}</button>
                         </form>

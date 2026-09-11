@@ -126,6 +126,13 @@ function searchCustomer() {
     var placeholder = 'AD SOYADLA AXTARIŞ';
     var search_data = $(this).inputmask('unmaskedvalue');
     var type = 'string';
+    var source = $(this).data('source');
+
+    if(source === 'tcrm'){
+        url = urls.ajaxurls.searchDoctor;
+    }else{
+        url = urls.ajaxurls.searchCustomer;
+    }
 
     if($(this).val()[0] === '0' || $(this).val()[0] === '('){
         limit = 10;
@@ -143,7 +150,7 @@ function searchCustomer() {
         $.ajax({
             type: "POST",
             dataType: 'JSON',
-            url: urls.ajaxurls.searchCustomer,
+            url: url,
             data: {
                 search: search_data,
                 type:type
@@ -323,8 +330,8 @@ document.addEventListener('click', function(e){
     if(!btn) return;
 
     const mode = btn.dataset.mode;
-    const doctorId = btn.dataset.doctorId || '';
-    const doctorName = btn.dataset.doctorName || '';
+    const doctorId = btn.dataset.userId || '';
+    const doctorName = btn.dataset.userName || '';
     const max = parseFloat(btn.dataset.max || '0');
 
     document.getElementById('pay_mode').value = mode;

@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PatientDoctorDeposit extends Model
+class PatientUserBalance extends Model
 {
-    protected $table = 'patient_doctor_deposits';
+    protected $table = 'patient_user_balances';
     public $timestamps = false;
 
     protected $fillable = [
         'patient_id',
-        'doctor_id',
-        'deposit',
+        'user_id',
+        'balance',
         'updated_at'
     ];
 
@@ -21,8 +21,8 @@ class PatientDoctorDeposit extends Model
         return $this->belongsTo(Patient::class, 'patient_id');
     }
 
-    public function doctor()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'doctor_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

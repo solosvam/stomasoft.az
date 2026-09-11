@@ -10,10 +10,12 @@ use App\Http\Controllers\Backend\AjaxController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\Backend\MessagesController;
 use App\Http\Controllers\Backend\PatientController;
+use App\Http\Controllers\Backend\DoctorController;
 use App\Http\Controllers\Backend\CashierController;
 use App\Http\Controllers\Backend\NotesController;
 use App\Http\Controllers\Backend\ReservationController;
 use App\Http\Controllers\Backend\CrmController;
+use App\Http\Controllers\Backend\TechnicCrmController;
 use App\Http\Controllers\Backend\ServicesController;
 use App\Http\Controllers\Backend\PartnersController;
 use App\Http\Controllers\Backend\PrintController;
@@ -46,6 +48,7 @@ Route::name('admin.')->group(function() {
         Route::controller(AjaxController::class)->prefix('ajax')->name('ajax.')->group(function() {
             Route::post('set-role-permission', 'setRolePermission')->name('set-role-permission');
             Route::post('search-customer','searchCustomer')->name('search-customer');
+            Route::post('search-doctor','searchDoctor')->name('search-doctor');
             Route::post('search-customer-reservation','searchCustomerForReservation')->name('search-customer-reservation');
         });
 
@@ -117,14 +120,27 @@ Route::name('admin.')->group(function() {
             Route::get('list','index')->name('list');
             Route::get('edit/{id}','edit')->name('edit');
             Route::get('delete/{id}','delete')->name('delete');
-            Route::get('balance/{id}','doctorBalance')->name('doctor.balance');
-            Route::get('balance/{partner}/doctor/{doctor}/patient/{patient}','patientLedger')->name('doctor.patient');
-            Route::post('balance/{partner}/doctor/{doctor}/patient/{patient}/pay','payPartnerPatient')->name('pay_patient');
+            Route::get('balance/{id}','userBalance')->name('user.balance');
+            Route::get('balance/{partner}/user/{user}/patient/{patient}','patientLedger')->name('user.patient');
+            Route::post('balance/{partner}/user/{user}/patient/{patient}/pay','payPartnerPatient')->name('pay_patient');
             Route::post('add','add')->name('add');
             Route::post('update/{id}','update')->name('update');
             Route::post('purchase/{id}','purchase')->name('purchase');
             Route::get('purchase/delete/{id}','deletePurchase')->name('deletePurchase');
             Route::post('buyitem','buyitem')->name('buyitem');
+        });
+
+        Route::controller(DoctorController::class)->middleware(['can:doctor.list'])->prefix('doctor')->name('doctor.')->group(function () {
+            Route::get('list','index')->name('list');
+            Route::get('list-data','listData')->name('listData');
+
+            Route::get('debtors','debtors')->name('debtors');
+            Route::get('active-jobs','activeJobs')->name('activeJobs');
+
+            Route::get('edit/{id}','edit')->name('edit');
+            Route::get('delete/{id}','delete')->name('delete');
+            Route::post('add','create')->name('add');
+            Route::post('update/{id}','update')->name('update');
         });
 
         Route::controller(PatientController::class)->middleware(['can:patient.list'])->prefix('patient')->name('patient.')->group(function () {
@@ -158,6 +174,18 @@ Route::name('admin.')->group(function() {
             Route::get('session/{id}/edit', 'editSession')->name('session.edit');
             Route::get('session/{id}/delete', 'deleteSession')->name('session.delete');
             Route::post('session/{id}/update', 'updateSession')->name('session.update');
+        });
+
+        Route::controller(TechnicCrmController::class)->middleware(['can:tcrm'])->prefix('tcrm')->name('tcrm.')->group(function () {
+            Route::get('/','index')->name('index');
+            Route::post('job/add/{id}','addJob')->name('job.add');
+            Route::get('/job/{id}/services', 'jobServices')->name('job.services');
+            Route::post('/job/{id}/services/add', 'addJobServices')->name('job.services.add');
+            Route::get('/job/{id}/edit', 'editJob')->name('job.edit');
+            Route::post('/job/{id}/update', 'updateJob')->name('job.update');
+            Route::post('job/{id}/complete', 'completeJob')->name('job.complete');
+            Route::delete('job/{id}', 'deleteJob')->name('job.delete');
+            Route::get('{id}','info')->name('info');
         });
 
         Route::controller(CashierController::class)->middleware(['can:cashier'])->prefix('cashier')->name('cashier.')->group(function () {

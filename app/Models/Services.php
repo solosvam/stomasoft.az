@@ -10,8 +10,9 @@ class Services extends Model
     protected $table = 'services';
     public $timestamps = false;
     protected $hidden = [];
+
     protected $fillable = [
-        'doctor_id',
+        'user_id',
         'name',
         'price',
         'visible',
@@ -20,15 +21,15 @@ class Services extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope('doctor', function (Builder $builder) {
+        static::addGlobalScope('user', function (Builder $builder) {
             if (auth()->check()) {
-                $builder->where('doctor_id', auth()->id());
+                $builder->where('user_id', auth()->id());
             }
         });
 
         static::creating(function ($service) {
-            if (auth()->check() && empty($service->doctor_id)) {
-                $service->doctor_id = auth()->id();
+            if (auth()->check() && empty($service->user_id)) {
+                $service->user_id = auth()->id();
             }
         });
     }

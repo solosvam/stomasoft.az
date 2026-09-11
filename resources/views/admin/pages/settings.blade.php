@@ -1,7 +1,7 @@
 @php
     $html_tag_data = [];
     $title = __('settings_edit');
-    $breadcrumbs = ["/admin"=>"White Dent", ""=> $title]
+    $breadcrumbs = ["/admin"=>"StomaSoft", ""=> $title]
 @endphp
 @extends('admin.layout',['html_tag_data'=>$html_tag_data, 'title'=>$title])
 
@@ -40,21 +40,21 @@
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Klinika adı</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <input type="text" class="form-control" name="clinic_name" placeholder="Klinika adı" value="{{ old('clinic_name',$user->clinic_name) }}" />
+                                        <input type="text" class="form-control" name="clinic_name" placeholder="Klinika adı" value="{{ old('clinic_name',$user->doctorProfile->clinic_name) }}" />
                                     </div>
                                 </div>
 
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Klinika Ünvanı</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <input type="text" class="form-control" name="clinic_address" placeholder="Klinika ünvanı" value="{{ old('clinic_address',$user->clinic_address) }}" />
+                                        <input type="text" class="form-control" name="clinic_address" placeholder="Klinika ünvanı" value="{{ old('clinic_address',$user->doctorProfile->clinic_address) }}" />
                                     </div>
                                 </div>
 
                                 <div class="mb-3 row">
                                     <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">İş saatları</label>
                                     <div class="col-sm-8 col-md-9 col-lg-10">
-                                        <input type="text" class="form-control" name="work_hours" placeholder="10:00-20:00" value="{{ old('work_hours',$user->work_hours) }}" />
+                                        <input type="text" class="form-control" name="work_hours" placeholder="10:00-20:00" value="{{ old('work_hours',$user->doctorProfile->work_hours) }}" />
                                     </div>
                                 </div>
 

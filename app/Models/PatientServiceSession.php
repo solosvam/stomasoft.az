@@ -24,7 +24,7 @@ class PatientServiceSession extends Model
         return $this->belongsTo(Patient::class, 'patient_id', 'id');
     }
 
-    public function doctor(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\CashierLedger;
-use App\Models\PartnerDoctorBalance;
-use App\Models\PartnerDoctorPatientBalance;
+use App\Models\PartnerUserBalance;
+use App\Models\PartnerUserPatientBalance;
 use App\Models\PartnerLedger;
-use App\Models\PatientDoctorBalance;
+use App\Models\PatientUserBalance;
 use App\Models\PatientLedger;
 use App\Models\PatientServiceSession;
 use App\Models\PatientServiceSessionItems;
@@ -101,12 +101,12 @@ class StatisticsController extends Controller
 
 
 
-        $allPatientsReceivableTotal = (float) PatientDoctorBalance::query()
-            ->where('doctor_id', $userId)
+        $allPatientsReceivableTotal = (float) PatientUserBalance::query()
+            ->where('user_id', $userId)
             ->sum('balance');
 
-        $allPartnersDebtTotal = (float) PartnerDoctorBalance::query()
-            ->where('doctor_id', $userId)
+        $allPartnersDebtTotal = (float) PartnerUserBalance::query()
+            ->where('user_id', $userId)
             ->sum('balance');
 
 

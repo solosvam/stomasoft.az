@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
+use App\Models\Technician\TechnicianDoctor;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -76,6 +77,63 @@ class AjaxController extends Controller
                 'full_name' => trim($p->name.' '.$p->surname),
                 'mobile' => $p->mobile,
                 'url' => '/crm/' . $p->id
+            ])->values()
+        ]);
+    }
+
+    public function searchDoctor(Request $request)
+    {
+        $q = trim((string) $request->search);
+
+        if ($q === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'axtarış boşdur'
+            ]);
+        }
+
+        $doctors = TechnicianDoctor::query()->where('user_id', auth()->id());
+
+        if (preg_match('/^\d+$/', $q)) {
+            $doctors->where('mobile', $q);
+        } else {
+            $parts = preg_split('/\s+/', $q, 2);
+
+            if (count($parts) === 2) {
+                [$name, $surname] = $parts;
+                $doctors->where('name', 'like', "%{$name}%")
+                    ->where('surname', 'like', "%{$surname}%");
+            } else {
+                $doctors->where(function ($qq) use ($q) {
+                    $qq->where('name', 'like', "%{$q}%")
+                        ->orWhere('surname', 'like', "%{$q}%");
+                });
+            }
+        }
+
+        $list = $doctors->orderBy('id', 'desc')->limit(20)->get(['id','name','surname','mobile']);
+
+        if ($list->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Həkim tapılmadı'
+            ]);
+        }
+
+        if ($list->count() === 1) {
+            $p = $list->first();
+            return response()->json([
+                'success' => true,
+                'url' => '/tcrm/' . $p->id
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'items' => $list->map(fn($p) => [
+                'full_name' => trim($p->name.' '.$p->surname),
+                'mobile' => $p->mobile,
+                'url' => '/tcrm/' . $p->id
             ])->values()
         ]);
     }

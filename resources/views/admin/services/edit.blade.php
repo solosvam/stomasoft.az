@@ -3,7 +3,7 @@
     $title = __('service_edit');
 
     $breadcrumbs = [
-        "/admin" => "White Dent",
+        "/admin" => "StomaSoft",
         "" => __('service_edit')
     ];
 @endphp
