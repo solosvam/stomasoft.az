@@ -162,7 +162,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>{{ __('date') }}</th>
-                                        <th>{{ __('patient') }}</th>
+                                        <th>
+                                            {{ auth()->user()->account_type === 'technician' ? 'Həkim' : 'Pasient' }}
+                                        </th>
                                         <th>{{ __('amount') }}</th>
                                         <th>{{ __('payment_type') }}</th>
                                         <th>{{ __('note') }}</th>
@@ -175,10 +177,16 @@
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d.m.Y H:i') }}</td>
                                             <td>
-                                                @if($log->patient)
+                                                @if($log->type === 'technician_payment' && $log->technicianDoctor)
+                                                    <a href="{{ route('admin.tcrm.info', $log->technicianDoctor->id) }}" target="_blank">
+                                                        {{ $log->technicianDoctor->fullname }}
+                                                    </a>
+
+                                                @elseif($log->patient)
                                                     <a href="{{ route('admin.crm.info', $log->patient->id) }}" target="_blank">
                                                         {{ $log->patient->fullname }}
                                                     </a>
+
                                                 @else
                                                     -
                                                 @endif
@@ -282,7 +290,7 @@
                                         <tr>
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d.m.Y H:i') }}</td>
-                                            <td>{{ $log->partner?->name ?? '-' }}</td>
+                                            <td>{{ $log->partner?->name ?? 'Sistem' }}</td>
                                             <td class="text-danger">
                                                 <i data-acorn-icon="arrow-top" data-acorn-size="16" class="me-1"></i>
                                                 <span class="fw-bold">{{ number_format($log->amount,2) }} ₼</span>
@@ -344,7 +352,7 @@
                             <label>{{ __('amount') }}</label>
                             <input name="amount" type="number" step="0.01" max="100000" min="0.1" class="form-control" placeholder="{{ __('enter_amount') }}" value="{{old('amount')}}" required>
                             <label>{{ __('expense_description') }}</label>
-                            <textarea name="description" class="form-control" rows="3" placeholder="{{ __('write_exoense_detail') }}" required>{{old('description')}}</textarea>
+                            <textarea name="description" class="form-control" rows="3" placeholder="{{ __('write_expense_detail') }}" required>{{old('description')}}</textarea>
                             <button type="submit" class="btn btn-primary mt-2">{{__('add')}}</button>
                         </form>
                     </div>

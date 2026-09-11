@@ -16,7 +16,7 @@ class CashierIndexService
             ->where('user_id', $userId)
             ->first();
 
-        $incomeLogs = CashierLedger::with(['user', 'patient'])
+        $incomeLogs = CashierLedger::with(['user', 'patient','technicianDoctor'])
             ->where('cashier_id', $userId)
             ->whereIn('type', CashierLedger::INCOME_TYPES)
             ->whereBetween('created_at', [$from, $to])

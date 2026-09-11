@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\CashierLedger;
 use App\Models\Technician\TechnicianDoctor;
 use App\Models\Technician\TechnicianDoctorBalance;
 use App\Models\Technician\TechnicianDoctorLedger;
@@ -10,6 +11,7 @@ use App\Models\Technician\TechnicianJob;
 use App\Models\Technician\TechnicianJobItem;
 use App\Models\Technician\TechnicianJobItemLocation;
 use App\Models\ServiceLocation;
+use App\Models\UserCashBalance;
 use App\Services\Technician\TechnicianDoctorInfoService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -493,5 +495,102 @@ class TechnicCrmController extends Controller
         return redirect()
             ->route('admin.tcrm.info', $job->doctor_id)
             ->with('success', 'İş silindi.');
+    }
+
+    public function pay(Request $request, $id)
+    {
+        $data = $request->validate([
+            'amount' => ['required', 'numeric', 'min:0.01'],
+            'method' => ['required', 'in:cash,pos,c2c'],
+            'note'   => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $amount     = round((float) $data['amount'], 2);
+        $method     = $data['method'];
+        $note       = $data['note'] ?? null;
+        $technicianId = auth()->id();
+
+        $doctor = TechnicianDoctor::where('id', $id)
+            ->where('user_id', $technicianId)
+            ->firstOrFail();
+
+        return DB::transaction(function () use (
+            $doctor,
+            $technicianId,
+            $amount,
+            $method,
+            $note
+        ) {
+
+            /*
+             * Həkimin texnikə olan borcu
+             */
+            $balance = TechnicianDoctorBalance::where('doctor_id', $doctor->id)
+                ->where('user_id', $technicianId)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$balance || (float) $balance->balance <= 0) {
+                return back()->withErrors([
+                    'amount' => 'Bu həkimin borcu yoxdur'
+                ]);
+            }
+
+            $currentDebt = round((float) $balance->balance, 2);
+
+            if ($amount > $currentDebt) {
+                return back()->withErrors([
+                    'amount' => 'Məbləğ həkimin borcundan çox ola bilməz'
+                ]);
+            }
+
+            /*
+             * Həkimin texnikə olan borcunu azaldırıq
+             */
+            $balance->decrement('balance', $amount);
+
+            /*
+             * Həkim üzrə ledger
+             */
+            TechnicianDoctorLedger::create([
+                'doctor_id'  => $doctor->id,
+                'user_id'    => $technicianId,
+                'job_id'     => null,
+                'type'       => 'payment',
+                'amount'     => $amount,
+                'method'     => $method,
+                'note'       => $note,
+                'created_at' => now(),
+            ]);
+
+            /*
+             * Kassaya mədaxil logu
+             */
+
+            CashierLedger::create([
+                'cashier_id' => $technicianId,
+                'user_id'    => $technicianId,
+                'patient_id' => null,
+                'doctor_id'  => $doctor->id,
+                'partner_id' => null,
+                'type'       => 'technician_payment',
+                'method'     => $method,
+                'amount'     => $amount,
+                'note'       => $note,
+                'created_at' => now(),
+            ]);
+
+            /*
+             * Texnikin kassasını artırırıq
+             */
+            $cashBalance = UserCashBalance::firstOrCreate(
+                ['user_id' => $technicianId],
+                ['balance' => 0]
+            );
+
+            $cashBalance->increment('balance', $amount);
+
+            return back()->with('success', 'Ödəniş qeydə alındı');
+        });
     }
 }

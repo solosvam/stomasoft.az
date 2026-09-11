@@ -536,6 +536,104 @@
                 </option>
             @endforeach
         </div>
+
+        {{-- Həkimdən ödəniş qəbul et --}}
+        <div class="modal fade" id="doctorPayModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST"
+                      action="{{ route('admin.tcrm.pay', $doctor->id) }}"
+                      class="modal-content">
+                    @csrf
+
+                    <div class="modal-header p-3">
+                        <h5 class="modal-title">Ödəniş qəbul et</h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal">
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+                            <label class="form-label">Həkim</label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   value="{{ $doctor->fullname }}"
+                                   disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('amount') }}</label>
+
+                            <div class="input-group">
+                                <input type="number"
+                                       step="0.01"
+                                       min="0.01"
+                                       class="form-control"
+                                       name="amount"
+                                       required>
+
+                                <span class="input-group-text">₼</span>
+                            </div>
+
+                            <div class="form-text">
+                                Cari balans:
+                                <strong>{{ number_format($balance, 2) }} ₼</strong>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('payment_type') }}</label>
+
+                            <select class="form-select"
+                                    name="method"
+                                    required>
+
+                                <option value="cash">
+                                    {{ __('cash') }}
+                                </option>
+
+                                <option value="pos">
+                                    {{ __('pos') }}
+                                </option>
+
+                                <option value="c2c">
+                                    {{ __('c2c') }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('note') }}</label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   name="note">
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer p-3">
+
+                        <button type="button"
+                                class="btn btn-outline-danger"
+                                data-bs-dismiss="modal">
+                            {{ __('close') }}
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            {{ __('confirm') }}
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection
 

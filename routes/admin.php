@@ -186,6 +186,7 @@ Route::name('admin.')->group(function() {
             Route::post('job/{id}/complete', 'completeJob')->name('job.complete');
             Route::delete('job/{id}', 'deleteJob')->name('job.delete');
             Route::get('{id}','info')->name('info');
+            Route::post('{id}/pay', 'pay')->name('pay');
         });
 
         Route::controller(CashierController::class)->middleware(['can:cashier'])->prefix('cashier')->name('cashier.')->group(function () {

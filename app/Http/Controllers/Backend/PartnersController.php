@@ -285,7 +285,7 @@ class PartnersController extends Controller
 
         PartnerLedger::create([
             'partner_id' => $partnerId,
-            'doctor_id'  => $doctorId,
+            'user_id'  => $doctorId,
             'patient_id' => null,
             'type'       => 'purchase',
             'amount'     => $amount,
@@ -296,7 +296,7 @@ class PartnersController extends Controller
         $balance = PartnerUserBalance::firstOrCreate(
             [
                 'partner_id' => $partnerId,
-                'doctor_id'  => $doctorId,
+                'user_id'  => $doctorId,
             ],
             [
                 'balance'    => 0,
@@ -316,18 +316,18 @@ class PartnersController extends Controller
         $doctorId = auth()->id();
 
         $ledger = PartnerLedger::where('id', $ledgerId)
-            ->where('doctor_id', $doctorId)
+            ->where('user_id', $doctorId)
             ->where('type', 'purchase')
             ->firstOrFail();
 
         DB::transaction(function () use ($ledger) {
 
             PartnerUserBalance::where('partner_id', $ledger->partner_id)
-                ->where('doctor_id', $ledger->doctor_id)
+                ->where('user_id', $ledger->user_id)
                 ->decrement('balance', $ledger->amount);
 
             PartnerUserPatientBalance::where('partner_id', $ledger->partner_id)
-                ->where('doctor_id', $ledger->doctor_id)
+                ->where('user_id', $ledger->user_id)
                 ->where('patient_id', $ledger->patient_id)
                 ->decrement('balance', $ledger->amount);
 
