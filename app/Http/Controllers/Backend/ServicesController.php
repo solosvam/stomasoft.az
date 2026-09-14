@@ -34,7 +34,7 @@ class ServicesController extends Controller
 
     public function edit($id)
     {
-        $service = Services::where('doctor_id', auth()->id())
+        $service = Services::where('user_id', auth()->id())
             ->findOrFail($id);
         return view('admin.services.edit',[
             'service' => $service
@@ -53,7 +53,7 @@ class ServicesController extends Controller
             'name.*'    => 'Xidmət adı minimum 3 hərfdən ibarət olmalıdır !'
         ]);
 
-        $service = Services::where('doctor_id', auth()->id())
+        $service = Services::where('user_id', auth()->id())
             ->findOrFail($id);
 
         $service->update($validated);

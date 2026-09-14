@@ -205,7 +205,7 @@ class UsersController extends Controller
                 'status' => 1,
             ]);
 
-            $cashBalance = UserCashBalance::where('doctor_id', auth()->id())
+            $cashBalance = UserCashBalance::where('user_id', auth()->id())
                 ->lockForUpdate()
                 ->first();
 

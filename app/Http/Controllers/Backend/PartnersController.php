@@ -18,12 +18,26 @@ class PartnersController extends Controller
 {
     public function index()
     {
-        $partners = Partner::where('user_id',auth()->id())
+        $user = auth()->user();
+
+        $partners = Partner::where('user_id', $user->id)
+            ->with('linkedUser')
             ->withSum('userBalances as balance', 'balance')
             ->orderByDesc('balance')
             ->get();
 
-        return view('admin.partners.list', compact('partners'));
+        $technicians = collect();
+
+        if ($user->account_type === 'doctor') {
+            $technicians = User::where('account_type', 'technician')
+                ->orderBy('name')
+                ->get();
+        }
+
+        return view('admin.partners.list', compact(
+            'partners',
+            'technicians'
+        ));
     }
 
     public function add(PartnerCreateRequest $request)
