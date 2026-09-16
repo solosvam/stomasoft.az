@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\PartnerCreateRequest;
 use App\Models\CashierLedger;
+use App\Models\User;
 use App\Models\UserCashBalance;
 use App\Models\PartnerUserBalance;
 use App\Models\PartnerUserPatientBalance;
