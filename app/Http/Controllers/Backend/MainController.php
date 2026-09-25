@@ -76,7 +76,7 @@ class MainController extends Controller
     {
         $doctor = User::find($doctorId);
 
-        [$workStart, $workEnd] = explode('-', $doctor->work_hours ?? '10:00-20:00');
+        [$workStart, $workEnd] = explode('-', $doctor->doctorProfile->work_hours ?? '10:00-20:00');
 
         $reservations = Reservation::whereDate('date', $date->format('Y-m-d'))
             ->where('user_id', $doctorId)

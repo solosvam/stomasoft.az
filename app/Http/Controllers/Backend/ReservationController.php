@@ -96,10 +96,15 @@ class ReservationController extends Controller
         $services = Services::all();
 
         $slots = [];
-        $start = Carbon::createFromTime(10, 0);
-        $end   = Carbon::createFromTime(20, 0);
+        [$workStart, $workEnd] = array_map(
+            'intval',
+            explode('-', str_replace(':00', '', user()->doctorProfile->work_hours ?? '10:00-20:00'))
+        );
 
-        while ($start <= $end) {
+        $start = Carbon::createFromTime($workStart, 0);
+        $end   = Carbon::createFromTime($workEnd, 0);
+
+        while ($start->copy()->addMinutes(30)->lte($end)) {
             $time = $start->format('H:i');
             $slotId = $start->format('Hi');
 
@@ -305,12 +310,18 @@ class ReservationController extends Controller
                 return \Carbon\Carbon::parse($item->hour)->format('H:i');
             });
 
-        $start = \Carbon\Carbon::createFromTime(10, 0);
-        $end   = \Carbon\Carbon::createFromTime(20, 0);
+        [$workStart, $workEnd] = array_map(
+            'intval',
+            explode('-', str_replace(':00', '', user()->doctorProfile->work_hours ?? '10:00-20:00'))
+        );
+
+        $start = Carbon::createFromTime($workStart, 0);
+        $end   = Carbon::createFromTime($workEnd, 0);
+
 
         $html = '<div class="d-flex flex-wrap gap-2">';
 
-        while ($start <= $end) {
+        while ($start->copy()->addMinutes(30)->lte($end)) {
             $time = $start->format('H:i');
             $id   = $start->format('Hi');
 
