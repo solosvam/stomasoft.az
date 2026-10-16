@@ -1,7 +1,38 @@
 User-agent: *
-Disallow: /ajax/
-Disallow: /reservations/massdelete
+# Patient uploads (x-rays etc.) and stray public files
+Disallow: /backend/uploads/
+Disallow: /a.php
+# Booking form endpoints (not pages)
 Disallow: /reservation-hours
 Disallow: /reservation-store
+# Admin panel: nothing here is meant for search. /login stays crawlable on purpose
+# so that app./demo. can serve their noindex header.
+Disallow: /admin
+Disallow: /ajax/
+Disallow: /add
+Disallow: /cashier
+Disallow: /crm
+Disallow: /doctor/
+Disallow: /edit/
+Disallow: /impersonate
+Disallow: /list
+Disallow: /logout
+Disallow: /main
+Disallow: /messages
+Disallow: /notes
+Disallow: /partners
+Disallow: /patient/
+Disallow: /permission
+Disallow: /print/
+Disallow: /profile
+Disallow: /reservations
+Disallow: /role/
+Disallow: /services
+Disallow: /settings
+Disallow: /statistics
+Disallow: /stock
+Disallow: /subscription
+Disallow: /tcrm
+Disallow: /update/
 
 Sitemap: https://stomasoft.az/sitemap.xml

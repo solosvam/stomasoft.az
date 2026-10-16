@@ -19,6 +19,8 @@
 
 ## Görüləcək
 
+- [ ] TƏHLÜKƏSİZLİK: pasient faylları (rentgen və s.) `public/backend/uploads/patients/{id}/` altında saxlanılır — linki bilən hər kəs açır (`PatientController` `public_path` istifadə edir) və fayllar git-ə də düşüb. Fayllar `storage/app` (private) + giriş yoxlayan route ilə verilməli, repodan çıxarılmalıdır. `robots.txt` yalnız Google-dan gizlədir, qorumur.
+- [ ] `public/a.php` — diş sxemi SVG parçası, qalıq fayla oxşayır; lazım deyilsə sil.
 - [ ] Deploy-dan sonra serverdə `php artisan route:clear` (və cache istifadə olunursa `view:clear`).
 - [ ] Google Search Console: `https://stomasoft.az/sitemap.xml` təqdim et; `app.`/`demo.` üçün lazım gəlsə "Removals" ilə köhnə indeksi sil.
 - [ ] Paylaşım önizləməsini yoxla (WhatsApp/Telegram/Facebook Debugger) — `og-image.jpg` AZ mətnlidir, istənilərsə RU/EN/TR variantı.
