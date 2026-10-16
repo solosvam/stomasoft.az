@@ -1,4 +1,6 @@
 User-agent: *
+Disallow: /ajax/
+Disallow: /reservations/massdelete
 Disallow: /reservation-hours
 Disallow: /reservation-store
 
