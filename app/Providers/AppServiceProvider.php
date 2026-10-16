@@ -25,6 +25,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Must run before any redirect is built (not inside a view composer),
+        // otherwise redirects like app./demo. "/" -> "/login" come out as http://
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         // Language-aware links and SEO helpers for the public pages ($L in views)
         View::share('L', $this->app->make(Landing::class));
 
@@ -50,10 +56,6 @@ class AppServiceProvider extends ServiceProvider
                 'notesCount' => $notesCount,
                 'pageVideo'  => $pageVideo,
             ]);
-
-            if (app()->environment('production')) {
-                URL::forceScheme('https');
-            }
         });
     }
 }
