@@ -1,2 +1,5 @@
 User-agent: *
-Disallow:
+Disallow: /reservation-hours
+Disallow: /reservation-store
+
+Sitemap: https://stomasoft.az/sitemap.xml

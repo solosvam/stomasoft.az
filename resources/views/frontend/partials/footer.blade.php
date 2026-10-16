@@ -1,7 +1,7 @@
 <footer class="foot">
     <div class="wrap foot-in">
         <div>
-            <a href="{{ url('/') }}" class="brand">
+            <a href="{{ $L->url('home') }}" class="brand">
                 <img src="{{ asset('frontend/img/logo-mark.svg') }}" alt="" width="28" height="26">
                 <span>Stoma<b>Soft</b></span>
             </a>
@@ -12,7 +12,7 @@
             <a href="tel:+994504321103">+994 50 432 1 103</a>
             <a href="https://demo.{{ config('app.domain') }}">{{ __('landing.demo') }}</a>
             <a href="https://app.{{ config('app.domain') }}">{{ __('site.doctor_login') }}</a>
-            <a href="{{ url('/patients') }}">{{ __('landing.for_patients') }}</a>
+            <a href="{{ $L->url('patients') }}">{{ __('landing.for_patients') }}</a>
         </div>
     </div>
 </footer>

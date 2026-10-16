@@ -1,9 +1,42 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}">
 <head>
+    @php
+        $isAz = app()->getLocale() === 'az';
+        $jsonld = [
+            '@context' => 'https://schema.org',
+            '@graph'   => [
+                [
+                    '@type' => 'Organization',
+                    '@id'   => 'https://svam.az/#org',
+                    'name'  => 'SVAM MMC',
+                    'url'   => 'https://svam.az',
+                ],
+                [
+                    '@type'               => 'SoftwareApplication',
+                    'name'                => 'StomaSoft',
+                    'url'                 => $L->canonical(),
+                    'image'               => 'https://' . config('app.domain') . '/frontend/img/og-image.jpg',
+                    'description'         => __('site.seo_home_desc'),
+                    'applicationCategory' => 'BusinessApplication',
+                    'operatingSystem'     => 'Web',
+                    'inLanguage'          => ['az', 'en', 'ru', 'tr'],
+                    'publisher'           => ['@id' => 'https://svam.az/#org'],
+                    'offers'              => [
+                        '@type'         => 'AggregateOffer',
+                        'priceCurrency' => $isAz ? 'AZN' : 'USD',
+                        'lowPrice'      => $isAz ? '50' : '29',
+                        'highPrice'     => $isAz ? '99' : '59',
+                        'offerCount'    => 2,
+                    ],
+                ],
+            ],
+        ];
+    @endphp
     @include('frontend.partials.head', [
-        'title'     => __('welcome.meta_title'),
-        'canonical' => 'https://stomasoft.az',
+        'title'  => __('site.seo_home_title'),
+        'desc'   => __('site.seo_home_desc'),
+        'jsonld' => $jsonld,
     ])
 </head>
 <body>
@@ -202,7 +235,7 @@
                 <div class="ico">@include('frontend.partials.icon', ['n' => 'calendar'])</div>
                 <h3>{{ __('landing.for_patients') }}</h3>
                 <p>{{ __('site.aud_patient_d') }}</p>
-                <a href="{{ url('/patients') }}" class="more">{{ __('patients.book') }} @include('frontend.partials.icon', ['n' => 'arrow'])</a>
+                <a href="{{ $L->url('patients') }}" class="more">{{ __('patients.book') }} @include('frontend.partials.icon', ['n' => 'arrow'])</a>
             </div>
         </div>
     </div>
@@ -233,7 +266,7 @@
             <p>{{ __('site.cta_text') }}</p>
             <div class="cta">
                 <a href="https://demo.{{ config('app.domain') }}" class="btn btn-primary">{{ __('landing.demo_btn') }}</a>
-                <a href="{{ url('/doctors') }}#tarif" class="btn btn-ghost">{{ __('site.see_pricing') }}</a>
+                <a href="{{ $L->url('doctors') }}#tarif" class="btn btn-ghost">{{ __('site.see_pricing') }}</a>
                 <a href="tel:+994504321103" class="btn btn-ghost">+994 50 432 1 103</a>
             </div>
         </div>

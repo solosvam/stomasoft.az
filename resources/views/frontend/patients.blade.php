@@ -2,8 +2,8 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     @include('frontend.partials.head', [
-        'title'     => __('welcome.patients_title'),
-        'canonical' => 'https://stomasoft.az/patients',
+        'title' => __('site.seo_patients_title'),
+        'desc'  => __('site.seo_patients_desc'),
     ])
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>

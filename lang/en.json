@@ -478,5 +478,11 @@
     "site.svc_whitening": "Whitening",
     "site.price_3m_total": "Total :sum, billed for 3 months",
     "site.doctor_login": "Doctor login",
-    "site.developed_by": "Developed by"
+    "site.developed_by": "Developed by",
+    "site.seo_home_title": "Dental clinic software and CRM",
+    "site.seo_home_desc": "Software for dentists and dental clinics: patient records, online booking, cashier, financial reports and lab accounts — in the browser, nothing to install.",
+    "site.seo_doctors_title": "Features and pricing for dentists and clinics",
+    "site.seo_doctors_desc": "StomaSoft modules: patient base, appointments, cashier, stock, roles and prescriptions. From 29 USD per month. Try the free demo.",
+    "site.seo_patients_title": "Online booking: choose a clinic and doctor",
+    "site.seo_patients_desc": "Pick a dental clinic and doctor, see free time slots and book your visit online. Quick and easy."
 }

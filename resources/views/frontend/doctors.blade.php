@@ -2,8 +2,8 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     @include('frontend.partials.head', [
-        'title'     => __('welcome.doctors_title'),
-        'canonical' => 'https://stomasoft.az/doctors',
+        'title' => __('site.seo_doctors_title'),
+        'desc'  => __('site.seo_doctors_desc'),
     ])
 </head>
 <body>

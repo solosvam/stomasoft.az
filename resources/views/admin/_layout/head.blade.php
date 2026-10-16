@@ -1,3 +1,4 @@
+<meta name="robots" content="noindex, nofollow, noarchive">
 <!-- Favicon Tags Start -->
 <meta name="application-name" content="&nbsp;"/>
 <meta name="msapplication-TileColor" content="#FFFFFF"/>

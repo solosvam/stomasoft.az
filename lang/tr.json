@@ -436,5 +436,11 @@
     "site.svc_whitening": "Beyazlatma",
     "site.price_3m_total": "Toplam :sum, 3 ay için ödeme",
     "site.doctor_login": "Doktor girişi",
-    "site.developed_by": "Geliştiren"
+    "site.developed_by": "Geliştiren",
+    "site.seo_home_title": "Diş kliniği yazılımı ve CRM",
+    "site.seo_home_desc": "Diş doktorları ve klinikler için yazılım: hasta kartı, online randevu, kasa, mali rapor ve laboratuvar hesabı — tarayıcıda, kurulum gerektirmez.",
+    "site.seo_doctors_title": "Doktorlar ve klinikler için özellikler ve fiyatlar",
+    "site.seo_doctors_desc": "StomaSoft modülleri: hasta veri tabanı, randevu, kasa, stok, roller ve reçete. Aylık 29 USD'den başlayan fiyatlar. Ücretsiz demoyu deneyin.",
+    "site.seo_patients_title": "Online randevu: klinik ve doktor seçin",
+    "site.seo_patients_desc": "Diş kliniği ve doktor seçin, boş saatleri görün ve online randevu alın. Hızlı ve kolay."
 }

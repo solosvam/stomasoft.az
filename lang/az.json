@@ -480,5 +480,11 @@
     "site.svc_whitening": "Ağartma",
     "site.price_3m_total": "Cəmi :sum, 3 ay üçün ödəniş",
     "site.doctor_login": "Həkim girişi",
-    "site.developed_by": "Hazırlayan"
+    "site.developed_by": "Hazırlayan",
+    "site.seo_home_title": "Stomatoloji klinika proqramı və CRM",
+    "site.seo_home_desc": "Stomatoloq və klinikalar üçün proqram: pasient kartı, onlayn rezervasiya, kassa, maliyyə hesabatı və partnyor hesablaşması — brauzerdə, quraşdırmasız.",
+    "site.seo_doctors_title": "Həkim və klinikalar üçün funksiyalar və tariflər",
+    "site.seo_doctors_desc": "StomaSoft modulları: pasient bazası, rezervasiya, kassa, anbar, rollar və resept. Aylıq 99 AZN, 3 aylıq paketdə 50 AZN. Demo ilə pulsuz sınayın.",
+    "site.seo_patients_title": "Onlayn rezervasiya: klinika və həkim seçin",
+    "site.seo_patients_desc": "Stomatoloji klinika və həkim seçin, boş saatı görün və vaxtı onlayn rezerv edin. Tez və asan."
 }

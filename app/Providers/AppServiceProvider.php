@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Notes;
 use App\Models\PageVideo;
+use App\Support\Landing;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
@@ -16,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(Landing::class);
     }
 
     /**
@@ -24,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Language-aware links and SEO helpers for the public pages ($L in views)
+        View::share('L', $this->app->make(Landing::class));
+
         View::composer('*', function ($view) {
             $notesCount = 0;
 

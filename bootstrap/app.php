@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckSubscription;
+use App\Http\Middleware\NoIndexPrivateAreas;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             SetLocale::class,
+            NoIndexPrivateAreas::class,
         ]);
         $middleware->alias([
             'check.subscription' => CheckSubscription::class,
