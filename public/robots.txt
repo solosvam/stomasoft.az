@@ -1,7 +1,6 @@
 User-agent: *
-# Patient uploads (x-rays etc.) and stray public files
+# Patient uploads (x-rays etc.)
 Disallow: /backend/uploads/
-Disallow: /a.php
 # Booking form endpoints (not pages)
 Disallow: /reservation-hours
 Disallow: /reservation-store
